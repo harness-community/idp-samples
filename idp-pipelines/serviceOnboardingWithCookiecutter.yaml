@@ -69,6 +69,7 @@ pipeline:
                   failureStrategies: []
                   when:
                     stageStatus: Success
+                    condition: "false"
               - step:
                   type: JiraCreate
                   name: Notify SRE on Jira
@@ -87,6 +88,8 @@ pipeline:
                   timeout: 10m
                   when:
                     stageStatus: Success
+                    condition: |
+                      false
                   failureStrategies: []
               - step:
                   type: HarnessApproval
@@ -116,6 +119,8 @@ pipeline:
             type: Secret
             description: ""
             value: pat
+        when:
+          pipelineStatus: Success
   variables:
     - name: repository
       type: String
