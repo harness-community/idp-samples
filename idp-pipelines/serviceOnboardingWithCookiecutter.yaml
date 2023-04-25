@@ -107,7 +107,6 @@ pipeline:
                   timeout: 1d
                   when:
                     stageStatus: Success
-                    condition: "false"
                   failureStrategies: []
         tags: {}
         variables:
