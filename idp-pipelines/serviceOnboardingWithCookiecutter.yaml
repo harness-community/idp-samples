@@ -188,7 +188,6 @@ pipeline:
                       type: Inline
                       spec:
                         script: |-
-                          cd ..
                           rm -rf output/
                           rm -rf cookiecutter-django
                     environmentVariables: []
