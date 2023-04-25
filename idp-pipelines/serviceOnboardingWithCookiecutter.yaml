@@ -6,7 +6,7 @@ pipeline:
   tags: {}
   stages:
     - stage:
-        name: Fetch and Push
+        name: Creating Django Service
         identifier: fetchfromcustom
         description: ""
         type: Custom
