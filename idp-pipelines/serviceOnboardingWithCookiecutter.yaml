@@ -92,6 +92,37 @@ pipeline:
                       false
                   failureStrategies: []
               - step:
+                  type: ShellScript
+                  name: Git clone
+                  identifier: Git_clone
+                  spec:
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: git clone https://github.com/cookiecutter/cookiecutter-django.git
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+              - step:
+                  type: ShellScript
+                  name: Templatize
+                  identifier: Templatize
+                  spec:
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: |-
+                          python3 -m cookiecutter cookiecutter-django --no-input project_name="<+pipeline.variables.name>" --output-dir=output/
+
+                          cd output/
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+              - step:
                   type: HarnessApproval
                   name: HarnessApproval_1
                   identifier: HarnessApproval_1
@@ -108,6 +139,59 @@ pipeline:
                   when:
                     stageStatus: Success
                   failureStrategies: []
+              - step:
+                  type: ShellScript
+                  name: Create Repository
+                  identifier: Create_Repository
+                  spec:
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: "curl -L -X POST -H \"Accept: application/vnd.github+json\" -H \"Authorization: Bearer <+stage.variables.GITHUB_PASSWORD>\" https://api.github.com/user/repos  -d '{\"name\":\"<+pipeline.variables.repository>\",\"description\":\"This is your Django Service created by Harness IDP\",\"private\":false}'"
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+              - step:
+                  type: ShellScript
+                  name: "Push Repository "
+                  identifier: Push_Repository
+                  spec:
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: |-
+                          git init -b main
+                          git config --global user.email "test@harness.io"
+                          git config --global user.name "Test"
+                          git add .
+                          git commit -m "Initial Django Service Setup"
+                          git remote add origin https://github.com/SarvJ1/<+pipeline.variables.repository>.git
+                          # git push origin main 
+                          git push https://<+stage.variables.GITHUB_PASSWORD>@github.com/<+stage.variables.USERNAME>/<+pipeline.variables.repository>.git
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+              - step:
+                  type: ShellScript
+                  name: Cleanup
+                  identifier: Cleanup
+                  spec:
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: |-
+                          cd ..
+                          rm -rf output/
+                          rm -rf cookiecutter-django
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
         tags: {}
         variables:
           - name: USERNAME
