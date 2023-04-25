@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: djangoservice
   title: Create a Django Service
-  description: An template for the scaffolder that creates a Django service
+  description: A template for the scaffolder that creates a Django service
   tags:
     - django
     - harness
