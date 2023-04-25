@@ -116,6 +116,7 @@ pipeline:
                       type: Inline
                       spec:
                         script: |-
+                          pip3 install cookiecutter
                           python3 -m cookiecutter cookiecutter-django --no-input project_name="<+pipeline.variables.name>" --output-dir=output/
 
                           cd output/
