@@ -120,8 +120,6 @@ pipeline:
                         script: |-
                           pip3 install cookiecutter
                           python3 -m cookiecutter cookiecutter-django --no-input project_name="<+pipeline.variables.name>" --output-dir=output/
-
-                          cd output/
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
@@ -167,6 +165,7 @@ pipeline:
                       type: Inline
                       spec:
                         script: |-
+                          cd output/
                           git init -b main
                           git config --global user.email "test@harness.io"
                           git config --global user.name "Test"
