@@ -23,7 +23,12 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: git clone https://github.com/cookiecutter/cookiecutter-django.git
+                        script: |-
+                          #precleanup incase pipeline fails
+                          rm -rf output/
+                          rm -rf cookiecutter-django
+                          # Cloning
+                          git clone https://github.com/cookiecutter/cookiecutter-django.git
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
