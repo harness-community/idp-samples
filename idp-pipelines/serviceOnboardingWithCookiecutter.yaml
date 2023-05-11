@@ -91,6 +91,7 @@ pipeline:
                       spec:
                         script: |-
                           cd output/
+                          cd <+pipeline.variables.name>/
                           git init -b main
                           git config --global user.email "test@harness.io"
                           git config --global user.name "Test"
