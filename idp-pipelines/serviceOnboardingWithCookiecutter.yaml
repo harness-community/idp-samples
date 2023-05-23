@@ -175,3 +175,7 @@ pipeline:
       type: String
       description: ""
       value: <+input>
+    - name: letsee
+      type: Secret
+      description: ""
+      value: <+input>
