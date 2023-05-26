@@ -150,6 +150,7 @@ pipeline:
             value: pat
         when:
           pipelineStatus: Success
+          condition: "false"
     - stage:
         name: CI
         identifier: CI
