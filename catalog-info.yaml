@@ -4,7 +4,6 @@ metadata:
   name: my-new-service
   description: Description of my new service
   annotations:
-    backstage.io/techdocs-ref: ./docs
     pagerduty.com/integration-key: <sample-service-integration-key>
   tags:
     - java
