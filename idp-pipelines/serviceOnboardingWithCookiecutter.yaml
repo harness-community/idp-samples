@@ -154,10 +154,9 @@ pipeline:
     - stage:
         name: Build
         identifier: Build
-        description: ""
         type: CI
         spec:
-          cloneCodebase: true
+          cloneCodebase: false
           infrastructure:
             type: KubernetesDirect
             spec:
@@ -202,8 +201,3 @@ pipeline:
       type: String
       description: ""
       value: <+input>
-  properties:
-    ci:
-      codebase:
-        connectorRef: CI_github
-        build: <+input>
