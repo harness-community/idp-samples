@@ -152,24 +152,6 @@ pipeline:
           pipelineStatus: Success
           condition: "false"
     - stage:
-        name: CI
-        identifier: CI
-        description: ""
-        type: Pipeline
-        spec:
-          org: default
-          pipeline: Build_goHelloWorldServer_1657813786232
-          project: CIQuickstart
-          inputs:
-            identifier: Build_goHelloWorldServer_1657813786232
-            properties:
-              ci:
-                codebase:
-                  build: <+input>
-          outputs: []
-        tags: {}
-        variables: []
-    - stage:
         name: Build
         identifier: Build
         description: ""
