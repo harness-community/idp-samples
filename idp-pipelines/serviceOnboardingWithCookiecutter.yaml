@@ -154,9 +154,10 @@ pipeline:
     - stage:
         name: Build
         identifier: Build
+        description: ""
         type: CI
         spec:
-          cloneCodebase: false
+          cloneCodebase: true
           infrastructure:
             type: KubernetesDirect
             spec:
@@ -169,12 +170,13 @@ pipeline:
             steps:
               - step:
                   type: BuildAndPushDockerRegistry
-                  name: Build And Push
-                  identifier: Build_And_Push
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
                   spec:
                     connectorRef: Docker_Quickstart
                     repo: sarvagnyajatti/ciquickstart
                     tags:
+                      - <+pipeline.sequenceId>
                       - latest
   variables:
     - name: repository
@@ -201,3 +203,8 @@ pipeline:
       type: String
       description: ""
       value: <+input>
+  properties:
+    ci:
+      codebase:
+        connectorRef: CI_github
+        build: <+input>
