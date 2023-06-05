@@ -176,7 +176,7 @@ pipeline:
                     connectorRef: Docker_Quickstart
                     repo: sarvagnyajatti/ciquickstart
                     tags:
-                      - <+pipeline.sequenceId>
+                      - <+pipeline.pipeline.sequenceId>
                       - latest
   variables:
     - name: repository
