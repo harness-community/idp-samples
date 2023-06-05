@@ -169,6 +169,32 @@ pipeline:
           outputs: []
         tags: {}
         variables: []
+    - stage:
+        name: Build
+        identifier: Build
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: newconnector
+              namespace: harness-delegate-ng
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
+          execution:
+            steps:
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: Build And Push
+                  identifier: Build_And_Push
+                  spec:
+                    connectorRef: Docker_Quickstart
+                    repo: sarvagnyajatti/ciquickstart
+                    tags:
+                      - latest
   variables:
     - name: repository
       type: String
@@ -194,3 +220,8 @@ pipeline:
       type: String
       description: ""
       value: <+input>
+  properties:
+    ci:
+      codebase:
+        connectorRef: CI_github
+        build: <+input>
