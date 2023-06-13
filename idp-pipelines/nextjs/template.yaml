@@ -5,7 +5,7 @@ metadata:
   title: Create a Next.js app
   description: A template to create a new Next.js app
   tags:
-    - next.js
+    - nextjs
     - react
     - javascript
 spec:
