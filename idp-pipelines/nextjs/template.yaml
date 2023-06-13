@@ -16,13 +16,12 @@ spec:
       required:
         - project_name
         - github_repo
-        - isPublish
       properties:
         project_name:
           title: Name of your new app
           type: string
           description: Unique name of the app          
-        repository:
+        github_repo:
           title: Name of the GitHub repository
           type: string
           description: This will be the name of Repository on Github
@@ -31,10 +30,6 @@ spec:
           type: boolean
     - title: Service Infrastructure Details
       required:
-        - provider
-        - db
-        - cache
-        - lint
         - owner
       properties:
         cloud_provider:
