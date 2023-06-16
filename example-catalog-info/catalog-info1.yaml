@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: my-new-service2
+  name: my-new-service3
   description: Description of my new service
   annotations:
     backstage.io/techdocs-ref: dir:.
