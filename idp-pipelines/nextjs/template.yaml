@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: nextjs-app
-  title: Create a Next.js app
+  title: (Demo) Create a Next.js app
   description: A template to create a new Next.js app
   tags:
     - nextjs
