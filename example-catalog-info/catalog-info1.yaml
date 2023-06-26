@@ -13,6 +13,8 @@ metadata:
       title: Admin Dashboard
       icon: dashboard
       type: admin-dashboard
+    - url: https://jira.com
+      title: Jira project board
 spec:
   type: service
   lifecycle: production
