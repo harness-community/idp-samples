@@ -1,15 +1,15 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: nextjs-app
-  title: (Demo) Create a Next.js app
-  description: A template to create a new Next.js app
+  name: react-app
+  title: (Demo) Create a react app
+  description: A template to create a new react app
   tags:
     - nextjs
     - react
     - javascript
 spec:
-  owner: himanshu.mishra@harness.io
+  owner: debabrata.panigrahi@harness.io
   type: service
   parameters:
     - title: Next.js app details
