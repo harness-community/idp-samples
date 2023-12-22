@@ -1,0 +1,42 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: new-django-application
+  title: Create a new Django project
+  description: Start here for an MVC based full stack project
+  tags:
+    - python
+    - react
+    - recommend
+spec:
+  owner: himanshu.mishra@harness.io
+  type: service
+  parameters:
+    - title: App details
+      required:
+        - project_name
+      properties:
+        project_name:
+          title: Name of your new app
+          type: string
+          description: Unique name of the app (will be used as a repo name as well)
+        # This field is hidden but needed to authenticate the request to trigger the pipeline
+        token:
+          title: Harness Token
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken
+  steps:
+    - id: trigger
+      name: Creating your react app
+      action: trigger:harness-custom-pipeline
+      input:
+        url: "https://stress.harness.io/ng/account/zEaak-FLS425IEO7OLzMUg/module/idp-admin/orgs/default/projects/projctidp/pipelines/newdjangoproject/pipeline-studio"
+        inputset:
+          project_name: ${{ parameters.project_name }}
+        apikey: ${{ parameters.token }}
+
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}
