@@ -18,5 +18,5 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: team-a
+  owner: Demo_Group
   system: project-x
