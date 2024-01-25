@@ -4,6 +4,7 @@ metadata:
   name: commission-document-service
   description: 0418000013XG
   annotations:
+    backstage.io/techdocs-ref: dir:.
     pagerduty.com/integration-key: <sample-service-integration-key>
   tags:
     - java
