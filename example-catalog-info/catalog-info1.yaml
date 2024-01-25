@@ -15,5 +15,5 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: team-a
+  owner: harness_product_engineering
   system: project-x
