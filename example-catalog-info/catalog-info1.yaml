@@ -1,10 +1,9 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: my-new-service3
-  description: Description of my new service
+  name: commission-document-service
+  description: 0418000013XG
   annotations:
-    backstage.io/techdocs-ref: dir:.
     pagerduty.com/integration-key: <sample-service-integration-key>
   tags:
     - java
@@ -13,10 +12,8 @@ metadata:
       title: Admin Dashboard
       icon: dashboard
       type: admin-dashboard
-    - url: https://jira.com
-      title: Jira project board
 spec:
   type: service
   lifecycle: production
-  owner: Demo_Group
+  owner: team-a
   system: project-x
