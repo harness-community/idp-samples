@@ -6,9 +6,9 @@ metadata:
   annotations:
     backstage.io/techdocs-ref: dir:.
     pagerduty.com/integration-key: <sample-service-integration-key>
-    additionalInfo:
-      onShoreTeamLead: JaneDoe
-      offShoreTeamLead: DanJohn
+  additionalInfo:
+    onShoreTeamLead: Jane Doe
+    offShoreTeamLead: Dan John
   tags:
     - java
     - tag1
