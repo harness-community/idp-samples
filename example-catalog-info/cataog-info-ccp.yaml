@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: Food Ordering Service
+  name: FoodService
   description: Service Responsible for food ordering. 
   annotations:
     backstage.io/techdocs-ref: dir:.
