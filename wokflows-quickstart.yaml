@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 # some metadata about the template itself
 metadata:
-  name: Workflows Quickstart
+  name: Workflows-Quickstart
   title: Create a New GitHub Repository
   description: Creates a new GitHub Repository 
 spec:
