@@ -12,16 +12,17 @@ spec:
   parameters:
     - title: Fill in some steps
       required:
-        - name
-        - repoUrl
+        - github_repo
+        - github_org
       properties:
-        name:
-          title: Name
+        github_repo:
+          title: Repo Name
           type: string
-          description: Unique name of the component
-        repoUrl:
-          title: Repository Location
+          description: Name of the repository
+        github_org:
+          title: Org Name
           type: string
+          description: Name of the GitHub Org or User account where the repo is to be created
 
   # here's the steps that are executed in series in the scaffolder backend
   steps:
@@ -29,17 +30,10 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: ./template
+        url: https://github.com/backstage/software-templates/blob/main/
         values:
-          name: ${{ parameters.name }}
+          name: ${{ parameters.github_repo }}
           owner: ${{ parameters.owner }}
-
-    - id: fetch-docs
-      name: Fetch Docs
-      action: fetch:plain
-      input:
-        targetPath: ./community
-        url: https://github.com/backstage/community/tree/main/backstage-community-sessions
 
     - id: publish
       name: Publish
@@ -47,7 +41,7 @@ spec:
       input:
         allowedHosts: ['github.com']
         description: This is ${{ parameters.name }}
-        repoUrl: ${{ parameters.repoUrl }}
+        repoUrl: github.com?repo=${{ parameters.github_repo }}&owner=${{ parameters.github_org }}
 
   # some outputs which are saved along with the job for use in the frontend
   output:
