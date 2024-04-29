@@ -1,0 +1,31 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  tags:
+    - java
+    - user
+  name: user-service
+  annotations:
+    backstage.io/techdocs-ref: https://github.com/vikyathharekal/order-service/tree/main/docs
+    harness.io/project-url: https://qa.harness.io/ng/account/zEaak-FLS425IEO7OLzMUg/home/orgs/default/projects/vigneshproject/details
+    gitlab.com/project-id: '43877214'
+    jira/project-key: IDP
+    jenkins.io/github-folder: 'CDS-68313'
+    firehydrant.com/service-name: 'python-pipeline-samples'
+    backstage.io/kubernetes-label-selector: 'app=idp-ui'
+    backstage.io/kubernetes-namespace: '63feee14cbf66e3c798c4bdc'
+    github.com/project-slug: vigneswara-propelo/python-pipeline-samples
+    harness.io/pipelines: |
+      Build: https://stress.harness.io/ng/account/px7xd_BFRCi-pfWPYXVjvw/all/orgs/default/projects/idptestharness/pipelines/cipipelinetest/executions/EtQuSATdQH2CBagwyNwsVw/pipeline?storeType=INLINE
+    harness.io/services: |
+      cd: https://stress.harness.io/ng/account/px7xd_BFRCi-pfWPYXVjvw/cd/orgs/default/projects/idptestharness/services/testservice
+    pagerduty.com/service-id: PNISOWY
+#     snyk.io/org-name: vigneswara-propelo
+#     snyk.io/project-ids: 7c7766e6-1231-4e4f-b51f-0cbd2aacb227, 4addb946-2ff4-41b7-ae71-2a5d480193ee
+spec:
+  type: service
+  system: platform
+  lifecycle: production
+  owner: Harness_Account_All_Users
+  providesApis: 
+    - accesscontrol-service
