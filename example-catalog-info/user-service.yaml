@@ -22,6 +22,23 @@ metadata:
     pagerduty.com/service-id: PNISOWY
 #     snyk.io/org-name: vigneswara-propelo
 #     snyk.io/project-ids: 7c7766e6-1231-4e4f-b51f-0cbd2aacb227, 4addb946-2ff4-41b7-ae71-2a5d480193ee
+    links:
+      - url: https://admin.example-org.com
+        title: Admin Dashboard
+        icon: dashboard
+        type: admin-dashboard
+      - url: https://admin.example-org.com
+        title: QA Environment
+        icon: dashboard
+        type: admin-dashboard
+      - url: https://admin.example-org.com
+        title: Staging Environment
+        icon: dashboard
+        type: admin-dashboard
+      - url: https://admin.example-org.com
+        title: Production Environment
+        icon: dashboard
+        type: admin-dashboard
 spec:
   type: service
   system: platform
