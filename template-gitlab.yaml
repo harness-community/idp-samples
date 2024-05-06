@@ -15,23 +15,23 @@ spec:
     - title: Next.js app details
       required:
         - project_name
-        - github_repo
-        - github_org
+        - gitlab_repo
+        - gitlab_org
       properties:
         project_name:
           title: Name of your new app
           type: string
           description: Unique name of the app          
-        github_repo:
-          title: Name of the GitHub repository
+        gitlab_repo:
+          title: Name of the Gitlab repository
           type: string
-          description: This will be the name of Repository on Github
-        github_org:
-          title: Name of the GitHub Organisation
+          description: This will be the name of Repository on Gitlab
+        gitlab_org:
+          title: Name of the Gitlab Organisation
           type: string
-          description: This will be the name of Organisation on Github
-        github_token:
-          title: GitHub PAT
+          description: This will be the name of Organisation on Gitlab
+        gitlab_token:
+          title: Gitlab PAT
           type: string
           ui:widget: password
         token:
@@ -47,9 +47,9 @@ spec:
         url: "YOUR PIPELINE URL"
         inputset:
           project_name: ${{ parameters.project_name }}
-          github_repo: ${{ parameters.github_repo }}
-          github_org: ${{ parameters.github_org }}
-          github_token: ${{ parameters.github_token }}
+          gitlab_repo: ${{ parameters.gitlab_repo }}
+          gitlab_org: ${{ parameters.gitlab_org }}
+          gitlab_token: ${{ parameters.gitlab_token }}
         apikey: ${{ parameters.token }}
     # The final step is to register our new component in the catalog.
   output:
