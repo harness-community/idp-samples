@@ -1,0 +1,88 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: new-service
+  title: Create a new service
+  description: A template to create a new service
+  tags:
+    - nextjs
+    - react
+    - javascript
+spec:
+  owner: owner@company.com
+  type: service
+  parameters:
+    - title: Service Details
+      required:
+        - project_name
+        - organization_name
+        - public_template_url
+        - repository_type
+        - repository_description
+        - repository_default_branch
+        - direct_push_branch
+      properties:
+        public_template_url:
+          title: Public Cookiecutter Template URL
+          type: string
+          default: https://github.com/devesh-harness/test-cookicutter
+          description: URL to a Cookiecutter template. For the tutorial you can use the default input     
+        organization_name:
+          title: Git Organization
+          type: string
+          description: Name of your organization in Git      
+        project_name:
+          title: Name of your service
+          type: string
+          description: Your repo will be created with this name
+        repository_type:
+          type: string
+          title: Repository Type
+          enum:
+            - public
+            - private
+          default: public
+        repository_description:
+          type: string
+          title: Add a description to your repo
+        repository_default_branch:
+          title: Name of your Default Branch
+          type: string
+          default: main 
+        direct_push_branch:
+          title: Name of your Develop branch
+          type: string
+          default: develop  
+        owner:
+          title: Choose an Owner for the Service
+          type: string
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+        # This field is hidden but needed to authenticate the request to trigger the pipeline
+        token:
+          title: Harness Token
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken
+  steps:
+    - id: trigger
+      name: Bootstrapping your new service
+      action: trigger:harness-custom-pipeline
+      input:
+        url: "YOUR PIPELINE URL HERE"
+        inputset:
+          organization: ${{ parameters.organization_name }}
+          project_name: ${{ parameters.project_name }}
+          public_cookiecutter_template_url: ${{ parameters.public_template_url }}
+          repository_type: ${{ parameters.repository_type }}
+          repository_description: ${{ parameters.repository_description }}
+          repository_default_branch: ${{ parameters.repository_default_branch }}
+          direct_push_branch: ${{ parameters.direct_push_branch }}
+        apikey: ${{ parameters.token }}
+
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}
