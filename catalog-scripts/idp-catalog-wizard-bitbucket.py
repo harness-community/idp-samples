@@ -22,8 +22,8 @@ metadata:
     backstage.io/source-location: url:<repo_path>
 spec:
   type: service
-  domian: <workspac_name>
-  system: <unknown>
+  domian: <workspace_name>
+  system: <project>
   service: <repo_name>
   lifecycle: experimental
   owner: Harness_Account_All_Users
@@ -74,7 +74,7 @@ def list_repositories(workspace, project_key, username, app_password, repo_patte
         updated_yaml_content = updated_yaml_content.replace("<repo_path>", f"https://bitbucket.org/{workspace}/{current_directory}/src/{branch}/{directory}/catalog-info.yaml")
         updated_yaml_content = updated_yaml_content.replace("<workspace_name>", workspace)
         if project_key is not None:
-            updated_yaml_content = updated_yaml_content.replace("<unknown>", project_key.lower())
+            updated_yaml_content = updated_yaml_content.replace("<project>", project_key.lower())
 
         with open(file_path, "w") as file:
             file.write(updated_yaml_content)
@@ -83,7 +83,7 @@ def register_yamls(workspace, account, x_api_key):
     
     print("Registering YAML files...")
     count = 0
-    api_url = f"https://idp.harness.io/{account}/idp/api/catalog/locations"
+    api_url = f"https://backstage.qa.harness.io/{account}/idp/api/catalog/locations"
 
     repos = [name for name in os.listdir("./services") if os.path.isdir(os.path.join("./services", name))]
 
@@ -115,7 +115,7 @@ def register_yamls(workspace, account, x_api_key):
                     refresh_payload = {
                         "entityRef":f"component:default/{repo_name}"
                     }
-                    refresh_url = f"https://idp.harness.io/{account}/idp/api/catalog/refresh"
+                    refresh_url = f"https://backstage.qa.harness.io/{account}/idp/api/catalog/refresh"
                     api_response = session.post(refresh_url, json=refresh_payload, headers=api_headers)
                     print(f"Location already exists for file: {repo_name}. Refreshing it")
                     count += 1
@@ -153,8 +153,9 @@ def main():
         return
     
     if args.create_yamls:
-        if args.workspace == None or args.password == None or args.username:
-            print("Provide Bitbucket org name using --org and Bitbucket token using --token flags.")
+        if args.workspace == None or args.password == None or args.username == None:
+            print(args.workspace + " " + args.password + " " + args.username)
+            print("Provide Bitbucket (workspace name) or (workspace and project-key), Bitbucket username using --username and Bitbucket app_password using --password flags.")
             exit()
         list_repositories(args.workspace, args.project_key, args.username, args.password)
     elif args.register_yamls:
