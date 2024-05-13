@@ -23,7 +23,7 @@ metadata:
     backstage.io/source-location: url:{repo_path}
 spec:
   type: service
-  system: unknown
+  system: {orgName}
   lifecycle: experimental
   owner: Harness_Account_All_Users
 """
@@ -73,12 +73,12 @@ def list_repositories(organization, token, repo_pattern=None):
         repo_path = repo['html_url']
         if repo_pattern is None or re.match(repo_pattern, repo_name):
             print(repo_name)
-            create_or_update_catalog_info(repo_name, repo_path)
+            create_or_update_catalog_info(organization, repo_name, repo_path)
             yaml_files_created += 1
     print("----------")
     print(f"Total YAML files created or updated: {yaml_files_created}")
 
-def create_or_update_catalog_info(repo_name, repo_path):
+def create_or_update_catalog_info(organization, repo_name, repo_path):
     directory = f"services/{repo_name}"
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -90,6 +90,7 @@ def create_or_update_catalog_info(repo_name, repo_path):
         with open(yaml_file_path, "r") as file:
             existing_content = file.read()
         updated_content = yaml_content_template.format(repo_name=repo_name, repo_path=repo_path)
+        updated_content = yaml_content_template.replace("{orgName}", organization)
         with open(yaml_file_path, "w") as file:
             file.write(updated_content)
     else:
@@ -169,17 +170,17 @@ def main():
     
     if args.create_yamls:
         if args.org == None or args.token == None:
-            print("Please provide GitHub org name using --org and GitHub token using --token flags.")
+            print("Provide GitHub org name using --org and GitHub token using --token flags.")
             exit()
         list_repositories(args.org, args.token, args.repo_pattern)
     elif args.register_yamls:
-        if args.x_api_key == None or args.account == None:
-            print("Please provide GitHub org name, Harness account ID and Harness x_api_key to create the YAMLs")
+        if args.org == None or args.x_api_key == None or args.account == None:
+            print("Provide GitHub org name, Harness account ID and Harness x_api_key to create the YAMLs")
             exit()
         register_yamls(args.org, args.account, args.x_api_key)
     elif args.run_all:
         if args.x_api_key == None or args.account == None or args.org == None or args.token == None:
-            print("Please provide GitHub org name, GitHub Token, Harness account ID and Harness x_api_key to create the YAMLs")
+            print("Provide GitHub org name, GitHub Token, Harness account ID and Harness x_api_key to create the YAMLs")
             exit()
         list_repositories(args.org, args.token, args.repo_pattern)
         push_yamls()
