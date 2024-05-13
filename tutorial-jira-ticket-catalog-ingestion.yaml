@@ -139,7 +139,7 @@ spec:
       name: Bootstrapping your new service
       action: trigger:harness-custom-pipeline
       input:
-        url: https://qa.harness.io/ng/account/zEaak-FLS425IEO7OLzMUg/idp-admin/orgs/default/projects/idptestproject/pipelines/demojraapi/pipeline-studio/?storeType=INLINE&stageId=jiraapi&sectionId=INFRASTRUCTURE
+        url: "https://qa.harness.io/ng/account/zEaak-FLS425IEO7OLzMUg/idp-admin/orgs/default/projects/idptestproject/pipelines/demojraapi/pipeline-studio/?storeType=INLINE"
         inputset:
           email-id: ${{ parameters.email-id }}
           jira_token: ${{ parameters.jira-token }}
