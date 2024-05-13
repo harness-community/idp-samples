@@ -14,7 +14,7 @@ spec:
     - title: Service Details
       required:
         - email-id
-        - jira-token
+        - jiratoken
         - project-key
         - jira-component-name
         - issue-type
@@ -27,9 +27,10 @@ spec:
           title: Email ID used for Atlassain account
           type: string
           description: Use the email ID associated with JIRA
-        jira-token:
+        jiratoken:
           title: Jira Access Tokens
           type: string
+          ui:widget: password
           description: Add the API access tokens created under the above mentioned email id 
         project-key:
           title: Jira Project Key
@@ -141,7 +142,7 @@ spec:
         url: "https://qa.harness.io/ng/account/zEaak-FLS425IEO7OLzMUg/idp-admin/orgs/default/projects/idptestproject/pipelines/demojraapi/pipeline-studio/?storeType=INLINE"
         inputset:
           email-id: ${{ parameters.email-id }}
-          jira_token: ${{ parameters.jira-token }}
+          jira_token: ${{ parameters.jiratoken }}
           project-key: ${{ parameters.project-key }}
           component-name: ${{ parameters.jira-component-name }}
           issuetype: ${{ parameters.issue-type }}
