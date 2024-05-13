@@ -30,7 +30,6 @@ spec:
         jira-token:
           title: Jira Access Tokens
           type: string
-          ui:widget: password
           description: Add the API access tokens created under the above mentioned email id 
         project-key:
           title: Jira Project Key
