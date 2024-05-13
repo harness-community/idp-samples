@@ -120,7 +120,7 @@ spec:
             - chores
             - roadmap
             - tech-debt
-         default: roadmap     
+          default: roadmap     
         usergroup:
           title: Choose an Owner for the Service
           type: string
