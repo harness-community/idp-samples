@@ -16,8 +16,8 @@ spec:
         - email-id
         - jiratoken
         - project-key
-        - jira-component-name
         - issue-type
+        - jira-component-name
         - issue-summary
         - issue-content
         - labels
@@ -144,8 +144,8 @@ spec:
           email-id: ${{ parameters.email-id }}
           jira_token: ${{ parameters.jiratoken }}
           project-key: ${{ parameters.project-key }}
-          component-name: ${{ parameters.jira-component-name }}
           issuetype: ${{ parameters.issue-type }}
+          component-name: ${{ parameters.jira-component-name }}
           issue-summary: ${{ parameters.issue-summary }}
           issue-content: ${{ parameters.issue-content }}
           labels: ${{ parameters.labels }}
