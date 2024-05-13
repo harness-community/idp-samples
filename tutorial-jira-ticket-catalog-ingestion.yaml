@@ -6,7 +6,7 @@ metadata:
   description: A template to create a Jira Ticket
   tags:
     - jira
-    - Management
+    - management
 spec:
   owner: owner@company.com
   type: service
