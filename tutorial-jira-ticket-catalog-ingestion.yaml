@@ -1,0 +1,158 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: jira-ticket
+  title: Create a JIRA Ticket
+  description: A template to create a Jira Ticket
+  tags:
+    - jira
+    - Management
+spec:
+  owner: owner@company.com
+  type: service
+  parameters:
+    - title: Service Details
+      required:
+        - email-id
+        - jira-token
+        - project-key
+        - jira-component-name
+        - issue-type
+        - issue-summary
+        - issue-content
+        - labels
+        - usergroup
+      properties:
+        email-id:
+          title: Email ID used for Atlassain account
+          type: string
+          description: Use the email ID associated with JIRA
+        jira-token:
+          title: Jira Access Tokens
+          type: string
+          ui:widget: password
+          description: Add the API access tokens created under the above mentioned email id 
+        project-key:
+          title: Jira Project Key
+          type: string
+          enum: 
+            - ASSMT
+            - BUG
+            - BG
+            - BT
+            - CAG
+            - CHAOS
+            - CCM
+            - CDE
+            - CODE
+            - CDS
+            - CET
+            - CI
+            - CMX
+            - ADOPT
+            - CXE
+            - CS
+            - DOPS
+            - DR
+            - ECOE
+            - ENGX
+            - ENGOPS
+            - FFM
+            - AH
+            - HDH
+            - IMPENG
+            - IAC
+            - IDP
+            - ML
+            - NMSR
+            - OT
+            - PIPE
+            - PL
+            - SE
+            - SRM
+            - SEI
+            - SSCA
+          default: IDP
+          description: Your ticket will be created under this project
+        issue-type:
+          type: string
+          title: Selec your Jira component type
+          enum:
+            - Story
+            - Bug
+            - Test
+            - Epic
+            - Sub-task
+            - Test Plan
+            - Test Group
+            - Enhancement
+            - Question
+            - New Feature
+            - Task
+            - Spike
+            - UX Design
+            - Pipeline Action 
+            - RCA
+            - Hotfix
+          default: Story
+        jira-component-name:
+          type: string
+          title: Add the component for this issue
+          enum:
+            - Misc
+            - Backstage Core
+            - Platform
+            - Plugins
+            - Scorecards
+            - Flows
+            - Unit-Test-Failure
+          desciption: Component for ticket tracing eg., Misc, Backstage Core, Platform etc. 
+        issue-summary:
+          title: Give a title for your ticket
+          type: string
+        issue-content:
+          title: Describe the details needed in the ticket
+          type: string
+        labels:
+          type: string
+          title: Select a label for the issue
+          enum:
+            - chores
+            - roadmap
+            - tech-debt
+         default: roadmap     
+        usergroup:
+          title: Choose an Owner for the Service
+          type: string
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+        # This field is hidden but needed to authenticate the request to trigger the pipeline
+        token:
+          title: Harness Token
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken
+  steps:
+    - id: trigger
+      name: Bootstrapping your new service
+      action: trigger:harness-custom-pipeline
+      input:
+        url: https://qa.harness.io/ng/account/zEaak-FLS425IEO7OLzMUg/idp-admin/orgs/default/projects/idptestproject/pipelines/demojraapi/pipeline-studio/?storeType=INLINE&stageId=jiraapi&sectionId=INFRASTRUCTURE
+        inputset:
+          email-id: ${{ parameters.email-id }}
+          jira_token: ${{ parameters.jira-token }}
+          project-key: ${{ parameters.project-key }}
+          component-name: ${{ parameters.jira-component-name }}
+          issuetype: ${{ parameters.issue-type }}
+          issue-summary: ${{ parameters.issue-summary }}
+          issue-content: ${{ parameters.issue-content }}
+          labels: ${{ parameters.labels }}
+          usergroup: ${{ parameters.usergroup }}
+        apikey: ${{ parameters.token }}
+
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}
