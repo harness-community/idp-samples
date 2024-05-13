@@ -141,16 +141,16 @@ spec:
       input:
         url: "https://qa.harness.io/ng/account/zEaak-FLS425IEO7OLzMUg/idp-admin/orgs/default/projects/idptestproject/pipelines/demojraapi/pipeline-studio/?storeType=INLINE"
         inputset:
-          email-id: ${{ parameters.email-id }}
-          jira_token: ${{ parameters.jiratoken }}
-          project-key: ${{ parameters.project-key }}
-          issuetype: ${{ parameters.issue-type }}
-          component-name: ${{ parameters.jira-component-name }}
-          issue-summary: ${{ parameters.issue-summary }}
+          email-id: ${{parameters.email-id}}
+          jira_token: ${{parameters.jiratoken}}
+          project-key: ${{parameters.project-key}}
+          issuetype: ${{parameters.issue-type}}
+          component-name: ${{parameters.jira-component-name}}
+          issue-summary: ${{parameters.issue-summary}}
           issue-content: ${{ parameters.issue-content }}
-          labels: ${{ parameters.labels }}
-          usergroup: ${{ parameters.usergroup }}
-        apikey: ${{ parameters.token }}
+          labels: ${{parameters.labels}}
+          usergroup: ${{parameters.usergroup}}
+        apikey: ${{parameters.token}}
 
   output:
     links:
