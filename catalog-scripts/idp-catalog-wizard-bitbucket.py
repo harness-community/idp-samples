@@ -22,8 +22,8 @@ metadata:
     backstage.io/source-location: url:<repo_path>
 spec:
   type: service
-  domian: <workspac_name>
-  system: <unknown>
+  domian: <workspace_name>
+  system: <project>
   service: <repo_name>
   lifecycle: experimental
   owner: Harness_Account_All_Users
@@ -36,17 +36,13 @@ def list_repositories(workspace, project_key, username, app_password, repo_patte
     page = 1
     names = []
     if(project_key == None):
-        url = f"https://api.bitbucket.org/2.0/repositories/{workspace}"
+        url = f"https://api.bitbucket.org/2.0/repositories/{workspace}?"
     else:
-        url = f"https://api.bitbucket.org/2.0/repositories/{workspace}?q=project.key%3D%22{project_key}%22"
+        url = f"https://api.bitbucket.org/2.0/repositories/{workspace}?q=project.key%3D%22{project_key}%22&"
 
     while True:
 
-        if(project_key == None):
-            paginated_url = f'{url}?page={page}&pagelen={page_size}'
-        else:
-            paginated_url = f'{url}&page={page}&pagelen={page_size}'
-
+        paginated_url = f'{url}page={page}&pagelen={page_size}'
         response = requests.get(paginated_url, auth=HTTPBasicAuth(username, app_password))
         if response.status_code == 200:
             repositories = response.json()['values']
@@ -74,7 +70,7 @@ def list_repositories(workspace, project_key, username, app_password, repo_patte
         updated_yaml_content = updated_yaml_content.replace("<repo_path>", f"https://bitbucket.org/{workspace}/{current_directory}/src/{branch}/{directory}/catalog-info.yaml")
         updated_yaml_content = updated_yaml_content.replace("<workspace_name>", workspace)
         if project_key is not None:
-            updated_yaml_content = updated_yaml_content.replace("<unknown>", project_key.lower())
+            updated_yaml_content = updated_yaml_content.replace("<project>", project_key.lower())
 
         with open(file_path, "w") as file:
             file.write(updated_yaml_content)
@@ -129,7 +125,7 @@ def push_yamls():
     subprocess.run(["git", "add", f"{prefix_path}/"])
     commit_message = "Adding YAMLs"
     subprocess.run(["git", "commit", "-m", commit_message])
-    subprocess.run(["git", "push", "-f"])
+    subprocess.run(["git", "push"])
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="List repositories in a Bitbucket organization and manage catalog-info.yaml files")
@@ -153,8 +149,9 @@ def main():
         return
     
     if args.create_yamls:
-        if args.workspace == None or args.password == None or args.username:
-            print("Provide Bitbucket org name using --org and Bitbucket token using --token flags.")
+        if args.workspace == None or args.password == None or args.username == None:
+            print(args.workspace + " " + args.password + " " + args.username)
+            print("Provide Bitbucket (workspace name) or (workspace and project-key), Bitbucket username using --username and Bitbucket app_password using --password flags.")
             exit()
         list_repositories(args.workspace, args.project_key, args.username, args.password)
     elif args.register_yamls:
