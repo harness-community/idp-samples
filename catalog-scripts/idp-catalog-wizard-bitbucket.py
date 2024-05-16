@@ -36,17 +36,13 @@ def list_repositories(workspace, project_key, username, app_password, repo_patte
     page = 1
     names = []
     if(project_key == None):
-        url = f"https://api.bitbucket.org/2.0/repositories/{workspace}"
+        url = f"https://api.bitbucket.org/2.0/repositories/{workspace}?"
     else:
-        url = f"https://api.bitbucket.org/2.0/repositories/{workspace}?q=project.key%3D%22{project_key}%22"
+        url = f"https://api.bitbucket.org/2.0/repositories/{workspace}?q=project.key%3D%22{project_key}%22&"
 
     while True:
 
-        if(project_key == None):
-            paginated_url = f'{url}?page={page}&pagelen={page_size}'
-        else:
-            paginated_url = f'{url}&page={page}&pagelen={page_size}'
-
+        paginated_url = f'{url}page={page}&pagelen={page_size}'
         response = requests.get(paginated_url, auth=HTTPBasicAuth(username, app_password))
         if response.status_code == 200:
             repositories = response.json()['values']
@@ -83,7 +79,7 @@ def register_yamls(workspace, account, x_api_key):
     
     print("Registering YAML files...")
     count = 0
-    api_url = f"https://backstage.qa.harness.io/{account}/idp/api/catalog/locations"
+    api_url = f"https://idp.harness.io/{account}/idp/api/catalog/locations"
 
     repos = [name for name in os.listdir("./services") if os.path.isdir(os.path.join("./services", name))]
 
@@ -115,7 +111,7 @@ def register_yamls(workspace, account, x_api_key):
                     refresh_payload = {
                         "entityRef":f"component:default/{repo_name}"
                     }
-                    refresh_url = f"https://backstage.qa.harness.io/{account}/idp/api/catalog/refresh"
+                    refresh_url = f"https://idp.harness.io/{account}/idp/api/catalog/refresh"
                     api_response = session.post(refresh_url, json=refresh_payload, headers=api_headers)
                     print(f"Location already exists for file: {repo_name}. Refreshing it")
                     count += 1
@@ -129,7 +125,7 @@ def push_yamls():
     subprocess.run(["git", "add", f"{prefix_path}/"])
     commit_message = "Adding YAMLs"
     subprocess.run(["git", "commit", "-m", commit_message])
-    subprocess.run(["git", "push", "-f"])
+    subprocess.run(["git", "push"])
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="List repositories in a Bitbucket organization and manage catalog-info.yaml files")

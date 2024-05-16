@@ -147,7 +147,7 @@ def push_yamls():
     subprocess.run(["git", "add", "services/"])
     commit_message = "Adding YAMLs"
     subprocess.run(["git", "commit", "-m", commit_message])
-    subprocess.run(["git", "push", "-f"])
+    subprocess.run(["git", "push"])
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="List repositories in a GitHub organization and manage catalog-info.yaml files")
