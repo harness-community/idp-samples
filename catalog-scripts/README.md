@@ -26,7 +26,9 @@ repo
 ### Github
 - Usage
    Download the script using command - 
+   ```
    curl -o idp-catalog-wizard-github.py https://raw.githubusercontent.com/harness-community/idp-samples/main/catalog-scripts/idp-catalog-wizard-github.py
+   ```
 
    python3 idp-catalog-wizard-github.py [OPTIONS]
 
@@ -58,7 +60,9 @@ repo
 ### Bitbucket
 - Usage
    Download the script using command - 
+   ```
    curl -o idp-catalog-wizard-bitbucket.py https://raw.githubusercontent.com/harness-community/idp-samples/main/catalog-scripts/idp-catalog-wizard-bitbucket.py
+   ```
 
    Run
    python3 idp-catalog-wizard-bitbucket.py [OPTIONS]
