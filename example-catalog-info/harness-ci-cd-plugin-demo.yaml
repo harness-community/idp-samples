@@ -1,0 +1,36 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: canary-backend
+  description: pipeline build and deploy
+  annotations:
+       harness.io/pipeline-url: https://app.harness.io/ng/account/vpCkHKsDSxK9_KYfjCTMKA/module/ci/orgs/HDH/projects/HarnessDeveloperHub/pipelines/hdhprbuildpreviewpublishnetlify/pipeline-studio?storeType=INLINE
+  tags:
+    - java
+  
+  links:
+    - url: https://example.com/user
+      title: Examples Users
+      icon: user
+    - url: https://example.com/group
+      title: Example Group
+      icon: group
+    - url: https://example.com/cloud
+      title: Link with Cloud Icon
+      icon: cloud
+    - url: https://example.com/dashboard
+      title: Dashboard
+      icon: dashboard
+    - url: https://example.com/help
+      title: Support
+      icon: help
+    - url: https://example.com/web
+      title: Website
+      icon: web
+    - url: https://example.com/alert
+      title: Alerts
+      icon: alert
+spec:
+  type: service
+  lifecycle: experimental
+  owner: ccm-play-acc
