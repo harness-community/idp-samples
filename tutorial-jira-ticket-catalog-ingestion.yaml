@@ -13,17 +13,17 @@ spec:
   parameters:
     - title: Service Details
       required:
-        - email-id
+        - emailid
         - jiratoken
-        - project-key
-        - issue-type
-        - jira-component-name
-        - issue-summary
-        - issue-content
+        - projectkey
+        - issuetype
+        - jiracomponentname
+        - issuesummary
+        - issuecontent
         - labels
         - usergroup
       properties:
-        email-id:
+        emailid:
           title: Email ID used for Atlassain account
           type: string
           description: Use the email ID associated with JIRA
@@ -32,7 +32,7 @@ spec:
           type: string
           ui:widget: password
           description: Add the API access tokens created under the above mentioned email id 
-        project-key:
+        projectkey:
           title: Jira Project Key
           type: string
           enum: 
@@ -74,7 +74,7 @@ spec:
             - SSCA
           default: IDP
           description: Your ticket will be created under this project
-        issue-type:
+        issuetype:
           type: string
           title: Selec your Jira component type
           enum:
@@ -95,7 +95,7 @@ spec:
             - RCA
             - Hotfix
           default: Story
-        jira-component-name:
+        jiracomponentname:
           type: string
           title: Add the component for this issue
           enum:
@@ -107,10 +107,10 @@ spec:
             - Flows
             - Unit-Test-Failure
           desciption: Component for ticket tracing eg., Misc, Backstage Core, Platform etc. 
-        issue-summary:
+        issuesummary:
           title: Give a title for your ticket
           type: string
-        issue-content:
+        issuecontent:
           title: Describe the details needed in the ticket
           type: string
         labels:
@@ -141,13 +141,13 @@ spec:
       input:
         url: "https://qa.harness.io/ng/account/zEaak-FLS425IEO7OLzMUg/idp-admin/orgs/default/projects/idptestproject/pipelines/demojraapi/pipeline-studio/?storeType=INLINE"
         inputset:
-          email-id: ${{ parameters.email-id }}
-          jira_token: ${{ parameters.jiratoken }}
-          project-key: ${{ parameters.project-key }}
-          issuetype: ${{ parameters.issue-type }}
-          component-name: ${{ parameters.jira-component-name }}
-          issue-summary: ${{ parameters.issue-summary }}
-          issue-content: ${{ parameters.issue-content }}
+          emailid: ${{ parameters.emailid }}
+          jiratoken: ${{ parameters.jiratoken }}
+          projectkey: ${{ parameters.projectkey }}
+          issuetype: ${{ parameters.issuetype }}
+          componentname: ${{ parameters.jiracomponentname }}
+          issuesummary: ${{ parameters.issuesummary }}
+          issuecontent: ${{ parameters.issuecontent }}
           labels: ${{ parameters.labels }}
           usergroup: ${{ parameters.usergroup }}
         apikey: ${{ parameters.token }}
