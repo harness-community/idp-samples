@@ -4,8 +4,7 @@ metadata:
   name: my-new-service
   description: Description of my new service
   annotations:
-       harness.io/pipelines: | 
-         label A: https://app.harness.io/ng/account/vpCkHKsDSxK9_KYfjCTMKA/module/cd/orgs/HDH/projects/HarnessDeveloperHub/pipelines/hdhprbuildpreviewpublishnetlify/pipeline-studio?storeType=INLINE
+       harness.io/project-url: https://app.harness.io/ng/#/account/vpCkHKsDSxK9_KYfjCTMKA/home/orgs/default/projects/PREQA_NG_Pipelines/details
        github.com/project-slug: harness/harness-core-ui
        grafana/dashboard-selector: "folderUrl == 'https://grafana.harness.io/dashboards/f/X3UO7QLVk/sto' || folderUrl == 'https://grafana.harness.io/dashboards/f/3oaJ5P94z/cie'"
        grafana/alert-label-selector: "destination=sto-prod-slack"
