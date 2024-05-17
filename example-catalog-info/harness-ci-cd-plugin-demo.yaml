@@ -4,8 +4,8 @@ metadata:
   name: canary-backend
   description: pipeline build and deploy
   annotations:
-       harness.io/pipelines: | 
-         labelA: https://app.harness.io/ng/account/vpCkHKsDSxK9_KYfjCTMKA/module/ci/orgs/HDH/projects/HarnessDeveloperHub/pipelines/hdhprbuildpreviewpublishnetlify/pipeline-studio?storeType=INLINE
+   harness.io/pipelines: | 
+     labelA: https://app.harness.io/ng/account/vpCkHKsDSxK9_KYfjCTMKA/module/ci/orgs/HDH/projects/HarnessDeveloperHub/pipelines/hdhprbuildpreviewpublishnetlify/pipeline-studio?storeType=INLINE
   tags:
     - java
   
