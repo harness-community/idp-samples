@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: demo-service
+  name: demo-service-with-module
   description: pipeline build and deploy
   annotations:
        harness.io/pipelines: |
