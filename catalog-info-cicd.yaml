@@ -1,11 +1,11 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: demo-service-deba
+  name: demo-service
   description: pipeline build and deploy
   annotations:
        harness.io/pipelines: |
-         labelA: https://app.harness.io/ng/account/vpCkHKsDSxK9_KYfjCTMKA/idp-admin/orgs/default/projects/Backstageplugins/pipelines/Releasenpm/pipeline-studio?storeType=INLINE
+         labelA: https://app.harness.io/ng/account/vpCkHKsDSxK9_KYfjCTMKA/module/idp-admin/orgs/default/projects/Backstageplugins/pipelines/Releasenpm/pipeline-studio?storeType=INLINE
   tags:
     - java
   
