@@ -4,7 +4,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 # some metadata about the template itself
 metadata:
-  name: new service with cookiecutter
+  name: new-service-with-cookiecutter
   title: Create a new service corresponding to the JIRA Project
   description: A template to create a new service
   tags:
