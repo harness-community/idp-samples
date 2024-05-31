@@ -14,19 +14,18 @@ yaml_content_template = """
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
+  name: <repo_name>
   tags:
     - auto-generated
     - auto
-  name: <repo_name>
   annotations:
     backstage.io/source-location: url:<repo_path>
+    bitbucket.org/project-slug: "<workspace_name>/<repo_name>"
 spec:
   type: service
-  domian: <workspace_name>
-  system: <project>
-  service: <repo_name>
   lifecycle: experimental
   owner: Harness_Account_All_Users
+  system: <project>
 """
 
 prefix_path = "services"
@@ -86,7 +85,6 @@ def register_yamls(workspace, account, x_api_key):
     for repo_name in repos:
         if repo_name != current_directory:
             directory = f"services/{repo_name}"
-            print(f"https://bitbucket.org/{workspace}/{current_directory}/src/{branch}/{directory}/catalog-info.yaml")
             api_payload = {
                 "target": f"https://bitbucket.org/{workspace}/{current_directory}/src/{branch}/{directory}/catalog-info.yaml",
                 "type": "url"
@@ -139,15 +137,18 @@ def parse_arguments():
     parser.add_argument("--run-all", action="store_true", help="Run all operations: create, register, and run")
     parser.add_argument("--x_api_key", help="Harness x-api-key")
     parser.add_argument("--account", help="Harness account")
+    parser.add_argument("--branch", help="Your git branch")
     return parser.parse_args()
 
 def main():
+    global branch
     args = parse_arguments()
     
     if not (args.create_yamls or args.register_yamls or args.run_all):
         print("Error: One of --create-yamls, --register-yamls or --run_all must be used.")
         return
-    
+    if args.branch is not None:
+        branch = args.branch
     if args.create_yamls:
         if args.workspace == None or args.password == None or args.username == None:
             print(args.workspace + " " + args.password + " " + args.username)

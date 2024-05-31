@@ -16,16 +16,16 @@ yaml_content_template = """
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
+  name: {repo_name}
   tags:
     - auto-generated
-  name: {repo_name}
   annotations:
     backstage.io/source-location: url:{repo_path}
 spec:
   type: service
-  system: {orgName}
   lifecycle: experimental
   owner: Harness_Account_All_Users
+  system: {orgName}
 """
 
 def get_repositories_api(organization, token, current_directory=None, repo_pattern=None, per_page=100):
@@ -47,7 +47,7 @@ def get_repositories_api(organization, token, current_directory=None, repo_patte
         repos = response.json()
         if not repos:
             break
-        # print(f"Fetching repositories from page {page}...")
+
         for repo in repos:
             repo_name = repo['name'].lower()
             if repo_name == current_directory:
@@ -85,21 +85,19 @@ def create_or_update_catalog_info(organization, repo_name, repo_path):
     
     yaml_file_path = f"{directory}/catalog-info.yaml"
 
+    content = yaml_content_template.format(repo_name=repo_name, repo_path=repo_path, orgName=organization)
+
     if os.path.exists(yaml_file_path):
-        # Update existing YAML file
-        with open(yaml_file_path, "r") as file:
-            existing_content = file.read()
-        updated_content = yaml_content_template.format(repo_name=repo_name, repo_path=repo_path)
-        updated_content = yaml_content_template.replace("{orgName}", organization)
+        
         with open(yaml_file_path, "w") as file:
-            file.write(updated_content)
+            file.write(content)
     else:
-        # Create new YAML file
+        
         with open(yaml_file_path, "w") as file:
-            file.write(yaml_content_template.format(repo_name=repo_name, repo_path=repo_path))
+            file.write(content)
 
 def register_yamls(organization, account, x_api_key):
-    # Placeholder function for registering YAML files
+    
     print("Registering YAML files...")
     count = 0
     api_url = f"https://idp.harness.io/{account}/idp/api/catalog/locations"
@@ -159,15 +157,17 @@ def parse_arguments():
     parser.add_argument("--run-all", action="store_true", help="Run all operations: create, register, and run")
     parser.add_argument("--x_api_key", help="Harness x-api-key")
     parser.add_argument("--account", help="Harness account")
+    parser.add_argument("--branch", help="Your git branch")
     return parser.parse_args()
 
 def main():
     args = parse_arguments()
-    
+    global branch
     if not (args.create_yamls or args.register_yamls or args.run_all):
         print("Error: One of --create-yamls, --register-yamls or --run_all must be used.")
         return
-    
+    if args.branch is not None:
+        branch = args.branch
     if args.create_yamls:
         if args.org == None or args.token == None:
             print("Provide GitHub org name using --org and GitHub token using --token flags.")
