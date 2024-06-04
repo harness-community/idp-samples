@@ -1,8 +1,6 @@
 import argparse
 import requests
 import os
-# import yaml
-import re
 from requests.auth import HTTPBasicAuth
 import argparse
 from requests.packages.urllib3.util.retry import Retry
@@ -119,7 +117,6 @@ def register_yamls(organization, account, x_api_key):
                 "type": "url"
             }
             api_headers = {
-                # "Authorization": f"Bearer {bearer_token}",
                 "x-api-key": f"{x_api_key}",
                 "Content-Type": "application/json",
                 "Harness-Account": f"{account}"
