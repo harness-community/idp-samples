@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 # some metadata about the template itself
 metadata:
-  name: Template Quickstart
+  name: Templatequickstart
   title: Demo Template Quickstart
   description: scaffolder v1beta3 template demo
 spec:
