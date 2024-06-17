@@ -21,6 +21,7 @@ metadata:
     - auto-generated
   annotations:
     backstage.io/source-location: url:{repo_path}
+    github.com/project-slug: {project_slug}
 spec:
   type: service
   lifecycle: experimental
@@ -85,7 +86,7 @@ def create_or_update_catalog_info(organization, repo_name, repo_path):
     
     yaml_file_path = f"{directory}/catalog-info.yaml"
 
-    content = yaml_content_template.format(repo_name=repo_name, repo_path=repo_path, orgName=organization)
+    content = yaml_content_template.format(repo_name=repo_name, repo_path=repo_path, orgName=organization), project_slug=organization+'/'+repo_name)
 
     if os.path.exists(yaml_file_path):
         
