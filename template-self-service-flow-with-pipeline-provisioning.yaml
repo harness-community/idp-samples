@@ -1,0 +1,113 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: new-service
+  title: Create a new service
+  description: A template to create a new service
+  tags:
+    - nextjs
+    - react
+    - javascript
+spec:
+  owner: owner@company.com
+  type: service
+  parameters:
+    - title: Service Details
+      required:
+        - project_name
+        - organization_name
+        - public_template_url
+        - repository_type
+        - repository_description
+        - repository_default_branch
+        - direct_push_branch
+        - harness_org
+        - harness_project
+        - harness_pipeline_name
+        - catalog_file_name
+      properties:
+        public_template_url:
+          title: Public Cookiecutter Template URL
+          type: string
+          default: https://github.com/devesh-harness/test-cookicutter
+          description: URL to a Cookiecutter template. For the tutorial you can use the default input     
+        organization_name:
+          title: Git Organization
+          type: string
+          description: Name of your organization in Git      
+        project_name:
+          title: Name of your service
+          type: string
+          description: Your repo will be created with this name
+        repository_type:
+          type: string
+          title: Repository Type
+          enum:
+            - public
+            - private
+          default: public
+        repository_description:
+          type: string
+          title: Add a description to your repo
+        repository_default_branch:
+          title: Name of your Default Branch
+          type: string
+          default: main 
+        direct_push_branch:
+          title: Name of your Develop branch
+          type: string
+          default: develop  
+        catalog_file_name:
+          title: Give a name to your catalog file
+          type: string
+          default: catalog-info.yaml
+        harness_org:
+          title: Add the name of the new org you want to create to add your project to
+          type: string
+          description: Add the name of the new org you want to create to add your project to
+        harness_project:
+          title: Add the name of the new project where you want to create your pipeline
+          type: string 
+          description: Add the name of the new org you want to create to add your project to
+        harness_pipeline_name:
+          title: Add the name of the new the pipeline
+          type: string 
+          description: make sure you dont add any space in between the pipeline name 
+        service_owner:
+          title: Choose an Owner for the Service
+          type: string
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+        # This field is hidden but needed to authenticate the request to trigger the pipeline
+        token:
+          title: Harness Token
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken
+  steps:
+    - id: trigger
+      name: Bootstrapping your new service
+      action: trigger:harness-custom-pipeline
+      input:
+        url: "YOUR PIPELINE URL HERE"
+        inputset:
+          organization: ${{ parameters.organization_name }}
+          project_name: ${{ parameters.project_name }}
+          cookiecutterurl: ${{ parameters.public_template_url }}
+          repository_type: ${{ parameters.repository_type }}
+          repository_description: ${{ parameters.repository_description }}
+          repository_default_branch: ${{ parameters.repository_default_branch }}
+          direct_push_branch: ${{ parameters.direct_push_branch }}
+          catalog_file_name: ${{ parameters.catalog_file_name }}
+          harness_org: ${{ parameters.harness_org }} 
+          harness_project: ${{ parameters.harness_project }}
+          harness_pipeline_name: ${{ parameters.harness_pipeline_name }}
+          owner: ${{ parameters.service_owner }}
+        apikey: ${{ parameters.token }}
+
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}
