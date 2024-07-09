@@ -8,7 +8,6 @@ from requests.adapters import HTTPAdapter
 import subprocess
 
 current_directory = os.path.basename(os.getcwd())
-branch  = "main"
 
 yaml_content_template = """
 apiVersion: backstage.io/v1alpha1
@@ -44,6 +43,7 @@ def get_directories(organization, repo_name, token, path):
             return []
 
         contents = response.json()
+
         directories.extend(item['name'] for item in contents if item['type'] == 'dir' and item['name'] != 'idp')
         
         if 'Link' in response.headers:
@@ -56,10 +56,10 @@ def get_directories(organization, repo_name, token, path):
             url = next_link
         else:
             url = None
-
+    
     return directories
 
-def list_directories(organization, token, path, repo_name, dir_pattern=None):
+def list_directories(organization, token, path, repo_name, branch, dir_pattern=None):
     yaml_files_created = 0
     print(f"Directories in {organization}:")
 
@@ -69,14 +69,14 @@ def list_directories(organization, token, path, repo_name, dir_pattern=None):
         directory_name = directory.lower()
         if directory_name == current_directory:
             continue
-        create_or_update_catalog_info(organization, directory_name, path)
-        print(directory + '\n')
+        create_or_update_catalog_info(organization, directory_name, path, branch)
+        print(directory)
         yaml_files_created += 1
     
     print("----------")
     print(f"Total YAML files created or updated: {yaml_files_created}")
 
-def create_or_update_catalog_info(organization, dirName, dirPath):
+def create_or_update_catalog_info(organization, dirName, dirPath, branch):
     directory = f"idp/{dirName}"
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -101,19 +101,20 @@ def create_or_update_catalog_info(organization, dirName, dirPath):
         with open(yaml_file_path, "w") as file:
             file.write(yaml_content_template.format(dirName=dirName, dirLocation=dirLocation, orgName=organization))
 
-def register_yamls(organization, account, x_api_key):
+def register_yamls(organization, account, x_api_key, branch):
     
     print("Registering YAML files...")
     count = 0
-    api_url = f"https://idp.harness.io/{account}/idp/api/catalog/locations"
+    api_url = f"https://backstage.qa.harness.io/{account}/idp/api/catalog/locations"
 
-    files = [name for name in os.listdir("./idp") if os.path.isfile(os.path.join("./idp", name))]
-    
+    # files = [name for name in os.listdir("./idp") if os.path.isfile(os.path.join("./idp", name))]
+    files = [name for name in os.listdir('./idp')]
+    print(f"The services are {files}")
     for file_name in files:
         if file_name != current_directory:
-            file_name = f"services/{file_name}"
+            file_name = f"idp/{file_name}"
             api_payload = {
-                "target": f"https://github.com/{organization}/{current_directory}/blob/{branch}/{file_name}",
+                "target": f"https://github.com/{organization}/{current_directory}/blob/{branch}/{file_name}/catalog-info.yaml",
                 "type": "url"
             }
             api_headers = {
@@ -136,7 +137,7 @@ def register_yamls(organization, account, x_api_key):
                     refresh_payload = {
                         "entityRef":f"component:default/{file_name}"
                     }
-                    refresh_url = f"https://idp.harness.io/{account}/idp/api/catalog/refresh"
+                    refresh_url = f"https://backstage.qa.harness.io/{account}/idp/api/catalog/refresh"
                     api_response = session.post(refresh_url, json=refresh_payload, headers=api_headers)
                     print(f"Location already exists for file: {file_name}. Refreshing it")
                     count += 1
@@ -150,7 +151,7 @@ def push_yamls():
     subprocess.run(["git", "add", "idp/"])
     commit_message = "Adding YAMLs"
     subprocess.run(["git", "commit", "-m", commit_message])
-    subprocess.run(["git", "push", "-f"])
+    subprocess.run(["git", "push"])
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="List repositories in a GitHub organization and manage catalog-info.yaml files")
@@ -169,29 +170,32 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
-    global branch
+    branch  = "main"
+    path = ""
     if not (args.create_yamls or args.register_yamls or args.run_all):
         print("Error: One of --create-yamls, --register-yamls or --run_all must be used.")
         return
     if args.branch is not None:
         branch = args.branch
+    if args.path is not None:
+        path = args.path
     if args.create_yamls:
-        if args.org == None or args.token == None or args.repo_name == None or args.path == None:
+        if args.org == None or args.token == None or args.repo_name == None:
             print("Provide GitHub org name using --org, GitHub token using --token, Directories path using --path and GitHub repo_name using --repo_name flags.")
             exit()
-        list_directories(args.org, args.token, args.path, args.repo_name)
+        list_directories(args.org, args.token, path, args.repo_name, branch)
     elif args.register_yamls:
         if args.org == None or args.x_api_key == None or args.account == None:
             print("Provide GitHub org name using --org, Harness account ID using --account and Harness x_api_key using --x_api_key to register the YAMLs")
             exit()
-        register_yamls(args.org, args.account, args.x_api_key)
+        register_yamls(args.org, args.account, args.x_api_key, path, branch)
     elif args.run_all:
         if args.x_api_key == None or args.account == None or args.org == None or args.token == None:
             print("Provide GitHub org name using --org, GitHub Token using --token, Harness account ID using --account, Harness x_api_key using --x_api_key, Directories path using --path and GitHub repo_name using --repo_name flags to create and register the YAMLs")
             exit()
-        list_directories(args.org, args.token, args.path, args.repo_name)
+        list_directories(args.org, args.token, path, args.repo_name, branch)
         push_yamls()
-        register_yamls(args.org, args.account, args.x_api_key)
+        register_yamls(args.org, args.account, args.x_api_key, branch)
 
 if __name__ == "__main__":
     main()
