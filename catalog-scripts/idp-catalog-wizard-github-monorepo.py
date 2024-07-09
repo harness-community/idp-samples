@@ -105,7 +105,7 @@ def register_yamls(organization, account, x_api_key, branch):
     
     print("Registering YAML files...")
     count = 0
-    api_url = f"https://backstage.qa.harness.io/{account}/idp/api/catalog/locations"
+    api_url = f"https://idp.harness.io/{account}/idp/api/catalog/locations"
 
     # files = [name for name in os.listdir("./idp") if os.path.isfile(os.path.join("./idp", name))]
     files = [name for name in os.listdir('./idp')]
@@ -137,7 +137,7 @@ def register_yamls(organization, account, x_api_key, branch):
                     refresh_payload = {
                         "entityRef":f"component:default/{file_name}"
                     }
-                    refresh_url = f"https://backstage.qa.harness.io/{account}/idp/api/catalog/refresh"
+                    refresh_url = f"https://idp.harness.io/{account}/idp/api/catalog/refresh"
                     api_response = session.post(refresh_url, json=refresh_payload, headers=api_headers)
                     print(f"Location already exists for file: {file_name}. Refreshing it")
                     count += 1
