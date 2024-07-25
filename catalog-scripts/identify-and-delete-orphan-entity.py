@@ -1,8 +1,8 @@
 import requests
 
 # Define the base API endpoint and headers
-base_api_url = 'https://idp.harness.io/vpCkHKsDSxK9_KYfjCTMKA/idp/api/catalog/entities/by-query?filter=kind%3Dlocation&limit=200'
-delete_api_url = 'https://idp.harness.io/vpCkHKsDSxK9_KYfjCTMKA/idp/api/catalog/entities/by-uid/{uid}'
+base_api_url = 'https://idp.harness.io/ACCOUNT_ID/idp/api/catalog/entities/by-query?filter=kind%3Dlocation&limit=200'
+delete_api_url = 'https://idp.harness.io/ACCOUNT_ID/idp/api/catalog/entities/by-uid/{uid}'
 headers = {
     'x-api-key': 'Harness PAT',
     'Harness-Account': 'Account ID'
