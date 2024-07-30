@@ -1,0 +1,91 @@
+pipeline:
+  name: Ingest Catalog Code Coverage Score
+  identifier: Ingest_Catalog_Code_Coverage_Score
+  projectIdentifier: himanshunew
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: Ingest Code Coverage Score
+        identifier: Ingest_Code_Coverage_Score
+        description: ""
+        type: IDP
+        spec:
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Ingest Data into Catalog
+                  identifier: Ingest_Data_into_Catalog
+                  spec:
+                    shell: Python
+                    command: |-
+
+                      import requests
+                      import json
+                      from pprint import pprint
+
+                      # This is where you will fetch and process the data to be ingested from third party source(s)
+
+                      code_coverage_scores_mapping = {
+                          'component:boutique-library': 40.0,
+                          'component:petstore-library': 88.0
+                      }
+
+                      # https://developer.harness.io/docs/platform/automation/api/add-and-manage-api-keys/
+
+                      harness_api_key = '<+secrets.getValue("himanshu_harness_api_key")>'
+
+                      # Catalog Entity field to be added/updated
+
+                      field_name = "metadata.test_coverage_score"
+
+                      api_endpoint = 'https://app.harness.io/gateway/v1/catalog/custom-properties'
+
+                      api_headers = {
+                          'x-api-key': harness_api_key,
+                          'Harness-Account': '9eLnJ29eTYyqvluAglvegg',
+                          'Content-Type': 'application/json'
+                      }
+
+                      # Prepare the data in the request body mapping entity name and the value to be set for the entity
+                      # Entity ref is nothing but a string containing entity kind and the entity name. It is case in-sensitive.
+                      # https://backstage.io/docs/features/software-catalog/references/
+
+
+                      value_overrides = []
+                      for key, value in code_coverage_scores_mapping.items():
+                          value_overrides.append(
+                              {
+                                  'entity_ref': key,
+                                  'override_value': value
+                              }
+                          )
+
+                      request_body = {
+                          'properties': [
+                              {
+                                  'field': field_name,
+                                  'filter': {
+                                      'kind': 'Component',
+                                      'type': 'service'
+                                  },
+                                  'value': '0', # default_value for all other entities
+                                  'value_overrides': value_overrides
+                              }
+                          ]
+                      }
+
+                      pprint(request_body)
+
+                      r = requests.post(api_endpoint, json=request_body, headers=api_headers)
+
+                      print(r.status_code)
+                      pprint(r.content)
+        tags: {}
