@@ -1,0 +1,68 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: jira-ticket
+  title: Create a JIRA Ticket
+  description: A template to create a Jira Ticket
+  tags:
+    - jira
+    - management
+spec:
+  owner: owner@company.com
+  type: service
+  parameters:
+  definitions:
+    locations:
+      enumNames:
+        - New York
+        - Amsterdam
+        - Hong Kong
+      enum:
+        - name: New York
+          lat: 40
+          lon: 74
+        - name: Amsterdam
+          lat: 52
+          lon: 5
+        - name: Hong Kong
+          lat: 22
+          lon: 114 
+    type: object
+    properties:
+        location:
+          title: Location
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Location
+          $ref: "#/definitions/locations" 
+        checkboxes:
+          title: Locations Checkboxes
+          type: array
+          uniqueItems: true
+          ui:field: CheckboxGroup
+          ui:options:
+            catalogFilter:
+              - kind: Location
+          items:
+            $ref: "#/definitions/locations"
+        token:
+          title: Harness Token
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken
+  steps:
+    - id: trigger
+      name: Bootstrapping your new service
+      action: trigger:harness-custom-pipeline
+      input:
+        url: "Your Harness URL"
+        inputset:
+          emailid: ${{ parameters.location }}
+          place: ${{ parameters.place }}
+        apikey: ${{ parameters.token }}
+
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}
