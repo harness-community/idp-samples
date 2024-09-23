@@ -1,9 +1,9 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: jira-ticket
-  title: Create a JIRA Ticket
-  description: A template to create a Jira Ticket
+  name: multi-parameter-template
+  title: Select Multiple Paramaeters
+  description: A template to select multiple parameters
   tags:
     - jira
     - management
