@@ -1,19 +1,69 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: multi-parameter-template
-  title: Select Multiple Paramaeters
-  description: A template to select multiple parameters
-  tags:
-    - jira
-    - management
+  name: location-selection-template
+  title: Location Selection Template
+  description: A template for selecting various locations using different UI components.
 spec:
-  owner: owner@company.com
+  owner: backstage-team
   type: service
+
   parameters:
-    - title: Repository Name
-      definitions:
-        locations:
+    properties:
+      location:
+        title: Location
+        description: Select a single location
+        ui:field: EntityPicker
+        ui:options:
+          catalogFilter:
+            - kind: Location
+        enumNames:
+          - New York
+          - Amsterdam
+          - Hong Kong
+        enum:
+          - name: New York
+            lat: 40
+            lon: 74
+          - name: Amsterdam
+            lat: 52
+            lon: 5
+          - name: Hong Kong
+            lat: 22
+            lon: 114
+
+      locationRadio:
+        title: Location Radio
+        description: Select one location via radio buttons
+        ui:field: Radio
+        ui:options:
+          catalogFilter:
+            - kind: Location
+        enumNames:
+          - New York
+          - Amsterdam
+          - Hong Kong
+        enum:
+          - name: New York
+            lat: 40
+            lon: 74
+          - name: Amsterdam
+            lat: 52
+            lon: 5
+          - name: Hong Kong
+            lat: 22
+            lon: 114
+
+      multiSelect:
+        title: Locations
+        description: Select multiple locations
+        type: array
+        uniqueItems: true
+        ui:field: MultiEntityPicker
+        ui:options:
+          catalogFilter:
+            - kind: Location
+        items:
           enumNames:
             - New York
             - Amsterdam
@@ -27,43 +77,55 @@ spec:
               lon: 5
             - name: Hong Kong
               lat: 22
-              lon: 114 
-        type: object
-        properties:
-            location:
-              title: Location
-              ui:field: EntityPicker
-              ui:options:
-                catalogFilter:
-                  - kind: Location
-              $ref: "#/definitions/locations" 
-            checkboxes:
-              title: Locations Checkboxes
-              type: array
-              uniqueItems: true
-              ui:field: CheckboxGroup
-              ui:options:
-                catalogFilter:
-                  - kind: Location
-              items:
-                $ref: "#/definitions/locations"
-            token:
-              title: Harness Token
-              type: string
-              ui:widget: password
-              ui:field: HarnessAuthToken
-  steps:
-    - id: trigger
-      name: Bootstrapping your new service
-      action: trigger:harness-custom-pipeline
-      input:
-        url: "Your Harness URL"
-        inputset:
-          emailid: ${{ parameters.location }}
-          place: ${{ parameters.place }}
-        apikey: ${{ parameters.token }}
+              lon: 114
 
-  output:
-    links:
-      - title: Pipeline Details
-        url: ${{ steps.trigger.output.PipelineUrl }}
+      checkboxes:
+        title: Locations Checkboxes
+        description: Select multiple locations via checkboxes
+        type: array
+        uniqueItems: true
+        ui:field: CheckboxGroup
+        ui:options:
+          catalogFilter:
+            - kind: Location
+        items:
+          enumNames:
+            - New York
+            - Amsterdam
+            - Hong Kong
+          enum:
+            - name: New York
+              lat: 40
+              lon: 74
+            - name: Amsterdam
+              lat: 52
+              lon: 5
+            - name: Hong Kong
+              lat: 22
+              lon: 114
+
+    required:
+      - location
+      - locationRadio
+      - multiSelect
+      - checkboxes
+
+  steps:
+    - id: select-locations
+      name: Select Locations
+      action: debug
+      input:
+        location: '{{parameters.location}}'
+        locationRadio: '{{parameters.locationRadio}}'
+        multiSelect: '{{parameters.multiSelect}}'
+        checkboxes: '{{parameters.checkboxes}}'
+
+    - id: show-result
+      name: Show Selected Locations
+      action: debug
+      input:
+        message: |
+          Selected location: {{steps.select-locations.output.location}}
+          Selected radio location: {{steps.select-locations.output.locationRadio}}
+          Selected multi-locations: {{steps.select-locations.output.multiSelect}}
+          Selected checkboxes locations: {{steps.select-locations.output.checkboxes}}
