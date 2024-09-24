@@ -86,7 +86,7 @@ def create_or_update_catalog_info(organization, repo_name, repo_path):
     
     yaml_file_path = f"{directory}/catalog-info.yaml"
 
-    content = yaml_content_template.format(repo_name=repo_name, repo_path=repo_path, orgName=organization), project_slug=organization+'/'+repo_name)
+    content = yaml_content_template.format(repo_name=repo_name, repo_path=repo_path, orgName=organization, project_slug=organization+'/'+repo_name)
 
     if os.path.exists(yaml_file_path):
         
