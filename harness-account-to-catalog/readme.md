@@ -29,3 +29,25 @@ the above will generate files in the following format:
 ```
 
 by default it will not overwrite any existing files
+
+## development guide
+
+### main.py
+
+main function of program, scan harness and create catalog yamls
+
+### harness.py
+
+functions to retrive information from harness
+
+### catalogs.py
+
+functions to render catalogs based on templates
+
+### templates/
+
+jinja2 template for catalogs
+
+### Dockerfile
+
+container for running the application

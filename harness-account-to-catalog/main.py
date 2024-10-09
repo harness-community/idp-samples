@@ -37,8 +37,8 @@ def main(args: Namespace):
         org_identifier = org["org"]["identifier"]
 
         # create parent dir if specified
-        if args.dir:
-            target_dir_name = create_dir(args.dir) + "/"
+        if directory := (args.dir or getenv("DIR")):
+            target_dir_name = create_dir(directory) + "/"
         else:
             target_dir_name = ""
 
@@ -92,14 +92,15 @@ def main(args: Namespace):
                         created_items.append(output_file)
 
     # create or update locations file
-    if args.repo:
-        if not path.isfile(args.location):
-            with open(args.location, "w") as output:
-                output.write(generate_location_yaml(args.repo, created_items))
+    if repo := (args.repo or getenv("REPO")):
+        location = getenv("LOCATION") or args.location
+        if not path.isfile(location):
+            with open(location, "w") as output:
+                output.write(generate_location_yaml(repo, created_items))
         else:
-            with open(args.location, "a") as output:
+            with open(location, "a") as output:
                 for item in created_items:
-                    output.write(f"  - {args.repo}/{item}\n")
+                    output.write(f"  - {repo}/{item}\n")
 
 
 if __name__ == "__main__":
