@@ -29,3 +29,9 @@ def generate_service_yaml(
     return template.render(
         name=name, project=project, description=description, owner=owner, type=type
     )
+
+
+def generate_location_yaml(repo: str, catalogs: list):
+    template = JINJA_ENV.get_template("locations.yaml.j2")
+
+    return template.render(repo=repo, catalogs=catalogs)

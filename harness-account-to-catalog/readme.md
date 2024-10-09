@@ -1,4 +1,4 @@
-# harness service to catalog
+# harness account to catalog
 
 an example python script to query harness for orgs, projects, and services
 
