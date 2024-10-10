@@ -1,0 +1,36 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: example-allof-template
+  title: Example AllOf Template
+  description: A template demonstrating the use of `allOf` for combining schemas
+spec:
+  type: service
+  parameters:
+    - title: Input Fields
+      properties:
+        allOf:
+          - properties:
+              lorem:
+                type:
+                  - string
+                  - boolean
+                default: true
+          - properties:
+              lorem:
+                type: boolean
+              ipsum:
+                type: string
+                title: Ipsum
+                description: 'A string for ipsum.'
+  steps:
+    - id: display-fields
+      name: Display Fields
+      action: debug:log
+      input:
+        message: |
+          You have provided the following values:
+          - Lorem: {{ parameters.lorem }}
+          {% if parameters.ipsum %}
+          - Ipsum: {{ parameters.ipsum }}
+          {% endif %}
