@@ -1,0 +1,26 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: example-template
+  title: Example Template
+  description: A template demonstrating conditional validation using oneOf
+spec:
+  type: service
+  parameters:
+    oneOf:
+      - properties:
+          lorem:
+            type: string
+        required:
+          - lorem
+      - properties:
+          ipsum:
+            type: string
+        required:
+          - ipsum
+  steps:
+    - id: example-step
+      name: Example Step
+      action: scaffolder:debug
+      input:
+        message: "This is an example template with conditional validation using oneOf."
