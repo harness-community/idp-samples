@@ -8,20 +8,19 @@ spec:
   type: service
   parameters:
     - title: Input Fields
-      allOf:
-        - properties:
-            lorem:
-              type:
-                - string
-                - boolean
-              default: true
-        - properties:
-            lorem:
-              type: boolean
-            ipsum:
-              type: string
-              title: Ipsum
-              description: 'A string for ipsum.'
+      properties:
+        lorem:
+          type:
+            - string
+            - boolean
+          default: true
+          description: 'A string or boolean value for lorem.'
+        ipsum:
+          type: string
+          title: Ipsum
+          description: 'A string for ipsum.'
+      required:
+        - lorem
   steps:
     - id: display-fields
       name: Display Fields
@@ -29,7 +28,7 @@ spec:
       input:
         message: |
           You have provided the following values:
-          - Lorem: {{ parameters.lorem }}
+          - Lorem: {{ parameters.lorem | toString }}
           {% if parameters.ipsum %}
           - Ipsum: {{ parameters.ipsum }}
           {% endif %}
