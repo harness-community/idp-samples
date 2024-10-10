@@ -8,21 +8,20 @@ spec:
   type: service
   parameters:
     - title: Input Fields
-      properties:
-        allOf:
-          - properties:
-              lorem:
-                type:
-                  - string
-                  - boolean
-                default: true
-          - properties:
-              lorem:
-                type: boolean
-              ipsum:
-                type: string
-                title: Ipsum
-                description: 'A string for ipsum.'
+      allOf:
+        - properties:
+            lorem:
+              type:
+                - string
+                - boolean
+              default: true
+        - properties:
+            lorem:
+              type: boolean
+            ipsum:
+              type: string
+              title: Ipsum
+              description: 'A string for ipsum.'
   steps:
     - id: display-fields
       name: Display Fields
