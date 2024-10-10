@@ -8,17 +8,19 @@ spec:
   type: service
   parameters:
     - title: Input Fields
-      properties:
-        lorem:
-          type:
-            - string
-            - boolean
-          default: true
-          description: 'A string or boolean value for lorem.'
-        ipsum:
-          type: string
-          title: Ipsum
-          description: 'A string for ipsum.'
+      allOf:
+        - properties:
+            lorem:
+              type:
+                - string
+                - boolean
+              default: true
+              description: 'A string or boolean value for lorem.'
+        - properties:
+            ipsum:
+              type: string
+              title: Ipsum
+              description: 'A string for ipsum.'
       required:
         - lorem
   steps:
