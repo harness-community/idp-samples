@@ -6,6 +6,6 @@ spec:
   type: url
   targets:
 {%- for item in catalogs %}
-  - {{ repo -}}/{{ item -}}
+  - {{ repo -}}/blob/{{ branch }}/{{ item -}}
 
 {% endfor %}

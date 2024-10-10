@@ -97,14 +97,15 @@ def main(args: Namespace):
     # create or update locations file
     if repo := (args.repo or getenv("REPO")):
         location = target_dir_name + (getenv("LOCATION") or args.location)
+        branch = args.branch or getenv("BRANCH", "main")
         if not path.isfile(location):
             with open(location, "w") as output:
-                output.write(generate_location_yaml(repo, created_items))
+                output.write(generate_location_yaml(repo, branch, created_items))
             print(location)
         else:
             with open(location, "a") as output:
                 for item in created_items:
-                    output.write(f"  - {repo}/{item}\n")
+                    output.write(f"\n  - {repo}/blob/{branch}/{item}")
             print(f"updated: {location}")
 
 
@@ -118,6 +119,8 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--dir")
     # current git repo url to generate location yaml
     parser.add_argument("-r", "--repo")
+    # branch in git
+    parser.add_argument("-b", "--branch")
     # location file to save to
     parser.add_argument("-l", "--location", default="locations.yaml")
 

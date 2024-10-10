@@ -4,6 +4,8 @@ an example python script to query harness for orgs, projects, and services
 
 and generate domains, systems, and components for each item
 
+an example of the output generated is [this repo](https://github.com/rssnyder/idp-service-catalog/tree/main)
+
 ## usage
 
 authentication:
@@ -19,6 +21,8 @@ settings:
 ```
 # to generate a locations catalog yaml, specify your repo location
 export REPO=https://github.com/myorg/myrepo
+# the main branch of the repo (default: main)
+export BRANCH=main
 # and with a custom file name (default: locations.yaml)
 export LOCATION=my-harness-locations.yaml
 
@@ -34,6 +38,7 @@ python main.py
 the above will generate files in the following format:
 
 ```
+locations.yaml
 <org a>/_domain.yaml
 <org a>/<proj b>/_system.yaml
 <org a>/<proj b>/<service c>.yaml
