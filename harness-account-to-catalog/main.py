@@ -30,13 +30,12 @@ def create_dir(name: str) -> str:
 
 
 def main(args: Namespace):
-
     # create parent dir if specified
     if directory := (args.dir or getenv("DIR")):
         target_dir_name = create_dir(directory) + "/"
     else:
         target_dir_name = ""
-    
+
     # keep track of all newly created catalogs
     created_items = []
 
@@ -53,6 +52,7 @@ def main(args: Namespace):
                 output.write(
                     generate_org_yaml(org_identifier, org["org"]["description"], OWNER)
                 )
+            print(proj_file_name)
             created_items.append(org_file_name)
 
         for proj in get_projects(org["org"]["identifier"]):
@@ -73,6 +73,7 @@ def main(args: Namespace):
                             OWNER,
                         )
                     )
+                print(proj_file_name)
                 created_items.append(proj_file_name)
 
                 for service in get_services(org_identifier, proj_identifier):
@@ -90,6 +91,7 @@ def main(args: Namespace):
                                     OWNER,
                                 )
                             )
+                        print(output_file)
                         created_items.append(output_file)
 
     # create or update locations file
@@ -98,10 +100,12 @@ def main(args: Namespace):
         if not path.isfile(location):
             with open(location, "w") as output:
                 output.write(generate_location_yaml(repo, created_items))
+            print(location)
         else:
             with open(location, "a") as output:
                 for item in created_items:
                     output.write(f"  - {repo}/{item}\n")
+            print(f"updated: {location}")
 
 
 if __name__ == "__main__":
