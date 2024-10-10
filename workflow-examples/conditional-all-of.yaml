@@ -15,17 +15,15 @@ spec:
                 - string
                 - boolean
               default: true
-              description: 'A string or boolean value for lorem.'
+        - properties:
+            lorem:
+              type: boolean
             ipsum:
               type: string
               title: Ipsum
               description: 'A string for ipsum.'
-          required:
-            - lorem
-        - properties:
-            additionalProperty:
-              type: boolean
-              description: 'An additional boolean property if needed.'
+      required:
+        - lorem
   steps:
     - id: display-fields
       name: Display Fields
