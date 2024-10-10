@@ -15,19 +15,47 @@ def generate_org_yaml(name: str, description: str, owner: str):
     return template.render(name=name, description=description, owner=owner)
 
 
-def generate_project_yaml(name: str, org: str, description: str, owner: str):
+def generate_project_yaml(
+    harness_url: str,
+    harness_account_id: str,
+    name: str,
+    org: str,
+    description: str,
+    owner: str,
+):
     template = JINJA_ENV.get_template("project.yaml.j2")
 
-    return template.render(name=name, org=org, description=description, owner=owner)
+    return template.render(
+        harness_url=harness_url,
+        harness_account_id=harness_account_id,
+        name=name,
+        org=org,
+        description=description,
+        owner=owner,
+    )
 
 
 def generate_service_yaml(
-    name: str, description: str, project: str, owner: str, type: str = "service"
+    harness_url: str,
+    harness_account_id: str,
+    name: str,
+    description: str,
+    org: str,
+    project: str,
+    owner: str,
+    type: str = "service",
 ):
     template = JINJA_ENV.get_template("service.yaml.j2")
 
     return template.render(
-        name=name, project=project, description=description, owner=owner, type=type
+        harness_url=harness_url,
+        harness_account_id=harness_account_id,
+        name=name,
+        org=org,
+        project=project,
+        description=description,
+        owner=owner,
+        type=type,
     )
 
 

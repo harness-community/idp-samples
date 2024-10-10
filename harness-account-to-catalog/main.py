@@ -2,11 +2,7 @@ from os import getenv, mkdir, path
 from sys import argv
 from argparse import ArgumentParser, Namespace
 
-from harness import (
-    get_orgs,
-    get_projects,
-    get_services,
-)
+from harness import get_orgs, get_projects, get_services, HARNESS_URL, HEADERS
 from catalogs import (
     generate_org_yaml,
     generate_project_yaml,
@@ -67,6 +63,8 @@ def main(args: Namespace):
                 with open(proj_file_name, "w") as output:
                     output.write(
                         generate_project_yaml(
+                            HARNESS_URL,
+                            HEADERS.get("Harness-Account"),
                             proj_identifier,
                             org_identifier,
                             proj["project"]["description"],
@@ -85,8 +83,11 @@ def main(args: Namespace):
                         with open(output_file, "w") as output:
                             output.write(
                                 generate_service_yaml(
+                                    HARNESS_URL,
+                                    HEADERS.get("Harness-Account"),
                                     service["service"]["identifier"],
                                     service["service"]["description"],
+                                    org_identifier,
                                     proj_identifier,
                                     OWNER,
                                 )

@@ -3,6 +3,8 @@ kind: System
 metadata:
   name: {{ name }}
   description: {{ description }}
+  annotations:
+    harness.io/project-url: https://{{ harness_url }}/ng/account/{{ harness_account_id }}/cd/orgs/{{ org }}/projects/{{ name }}
 spec:
   owner: {{ owner }}
   domain: {{ org }}

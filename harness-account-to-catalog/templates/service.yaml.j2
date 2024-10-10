@@ -3,6 +3,12 @@ kind: Component
 metadata:
   name: {{ name }}
   description: {{ descriptoon }}
+  namespace: default
+  annotations:
+    harness.io/project-url: https://{{ harness_url }}/ng/account/{{ harness_account_id }}/cd/orgs/{{ org }}/projects/{{ project }}
+    harness.io/services: >
+      {{ name }}:
+      https://{{ harness_url }}/ng/account/{{ harness_account_id }}/cd/orgs/{{ org }}/projects/{{ project }}/services/{{ name }}
 spec:
   type: {{ type }}
   owner: {{ owner }}
