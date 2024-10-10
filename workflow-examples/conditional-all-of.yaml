@@ -9,7 +9,9 @@ spec:
   parameters:
     - title: Input Fields
       allOf:
-        - properties:
+        - required:
+            - lorem
+          properties:
             lorem:
               type:
                 - string
@@ -21,8 +23,6 @@ spec:
               type: string
               title: Ipsum
               description: 'A string for ipsum.'
-      required:
-        - lorem
   steps:
     - id: display-fields
       name: Display Fields
