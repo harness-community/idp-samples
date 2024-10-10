@@ -25,8 +25,8 @@ export LOCATION=my-harness-locations.yaml
 # to create files in a sub folder
 export DIR=catalogs/gohere
 ```
-execution:
 
+execution:
 ```
 python main.py
 ```

@@ -52,7 +52,7 @@ def main(args: Namespace):
                 output.write(
                     generate_org_yaml(org_identifier, org["org"]["description"], OWNER)
                 )
-            print(proj_file_name)
+            print(org_file_name)
             created_items.append(org_file_name)
 
         for proj in get_projects(org["org"]["identifier"]):
