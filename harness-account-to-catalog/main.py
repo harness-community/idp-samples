@@ -30,17 +30,18 @@ def create_dir(name: str) -> str:
 
 
 def main(args: Namespace):
+
+    # create parent dir if specified
+    if directory := (args.dir or getenv("DIR")):
+        target_dir_name = create_dir(directory) + "/"
+    else:
+        target_dir_name = ""
+    
     # keep track of all newly created catalogs
     created_items = []
 
     for org in get_orgs():
         org_identifier = org["org"]["identifier"]
-
-        # create parent dir if specified
-        if directory := (args.dir or getenv("DIR")):
-            target_dir_name = create_dir(directory) + "/"
-        else:
-            target_dir_name = ""
 
         # create dir for this organization
         org_dir_name = create_dir(f"{target_dir_name}{org_identifier}")
@@ -93,7 +94,7 @@ def main(args: Namespace):
 
     # create or update locations file
     if repo := (args.repo or getenv("REPO")):
-        location = getenv("LOCATION") or args.location
+        location = target_dir_name + (getenv("LOCATION") or args.location)
         if not path.isfile(location):
             with open(location, "w") as output:
                 output.write(generate_location_yaml(repo, created_items))

@@ -14,6 +14,17 @@ export HARNESS_ACCOUNT_ID=abc123
 export HARNESS_PLATFORM_API_KEY=sat.abc123.xxx
 ```
 
+settings:
+
+```
+# to generate a locations catalog yaml, specify your repo location
+export REPO=https://github.com/myorg/myrepo
+# and with a custom file name (default: locations.yaml)
+export LOCATION=my-harness-locations.yaml
+
+# to create files in a sub folder
+export DIR=catalogs/gohere
+```
 execution:
 
 ```
