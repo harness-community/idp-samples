@@ -7,22 +7,21 @@ metadata:
 spec:
   type: service
   parameters:
-    properties:
-      oneOf:
-        - properties:
-            lorem:
-              type: string
-              title: Lorem
-              description: 'A string for lorem.'
-          required:
-            - lorem
-        - properties:
-            ipsum:
-              type: string
-              title: Ipsum
-              description: 'A string for ipsum.'
-          required:
-            - ipsum
+    oneOf:
+      - properties:
+          lorem:
+            type: string
+            title: Lorem
+            description: 'A string for lorem.'
+        required:
+          - lorem
+      - properties:
+          ipsum:
+            type: string
+            title: Ipsum
+            description: 'A string for ipsum.'
+        required:
+          - ipsum
   steps:
     - id: display-fields
       name: Display Selected Fields
