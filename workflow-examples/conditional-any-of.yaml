@@ -1,0 +1,67 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: identification-template
+  title: Identification Template
+  description: A template to gather identification information
+spec:
+  type: service
+  parameters:
+    - title: Identification Information
+      type: object
+      properties:
+        age:
+          type: integer
+          title: Age
+        items:
+          type: array
+          items:
+            type: object
+            anyOf:
+              - properties:
+                  foo:
+                    type: string
+                  required:
+                    - foo
+              - properties:
+                  bar:
+                    type: string
+                  required:
+                    - bar
+      anyOf:
+        - title: First method of identification
+          properties:
+            firstName:
+              type: string
+              title: First Name
+              default: Chuck
+            lastName:
+              type: string
+        - title: Second method of identification
+          properties:
+            idCode:
+              type: string
+              title: ID Code
+      required:
+        - age
+  steps:
+    - id: display-info
+      name: Display Identification Information
+      action: debug:log
+      input:
+        message: |
+          Age: {{ parameters.age }}
+          {% if parameters.items %}
+          Items:
+          {% for item in parameters.items %}
+            - {% if item.foo %} Foo: {{ item.foo }} {% endif %}
+            {% if item.bar %} Bar: {{ item.bar }} {% endif %}
+          {% endfor %}
+          {% endif %}
+          {% if parameters.firstName %}
+          First Name: {{ parameters.firstName }}
+          Last Name: {{ parameters.lastName }}
+          {% endif %}
+          {% if parameters.idCode %}
+          ID Code: {{ parameters.idCode }}
+          {% endif %}
