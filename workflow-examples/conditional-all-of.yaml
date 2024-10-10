@@ -9,20 +9,23 @@ spec:
   parameters:
     - title: Input Fields
       allOf:
-        - required:
-            - lorem
-          properties:
+        - properties:
             lorem:
               type:
                 - string
                 - boolean
               default: true
               description: 'A string or boolean value for lorem.'
-        - properties:
             ipsum:
               type: string
               title: Ipsum
               description: 'A string for ipsum.'
+          required:
+            - lorem
+        - properties:
+            additionalProperty:
+              type: boolean
+              description: 'An additional boolean property if needed.'
   steps:
     - id: display-fields
       name: Display Fields
