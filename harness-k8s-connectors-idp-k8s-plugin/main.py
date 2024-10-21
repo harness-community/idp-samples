@@ -59,6 +59,7 @@ def main() -> str:
             == "ServiceAccount"
         )
     ]:
+        # extract information we will use in the plugin config
         id = item["connector"]["identifier"]
         url = item["connector"]["spec"]["credential"]["spec"]["masterUrl"]
         secret = item["connector"]["spec"]["credential"]["spec"]["auth"]["spec"][
@@ -85,8 +86,6 @@ def main() -> str:
                 "type": "Secret",
                 "harness_secret_identifier": f"account.{secret}",
                 "is_deleted": False,
-                # need to find out how this is generated
-                "identifier": "670ff76e7716cd0116dd5281",
             }
         )
 
@@ -97,14 +96,11 @@ def main() -> str:
                 "proxy": True,
                 "selectors": delegates,
                 "pluginId": "kubernetes",
-                # need to find out how this is generated
-                "identifier": "670fe8a8ffc2587c02314289",
             }
         )
 
         print(f"added {id}")
 
-    print(dump(configs))
     resp = post(
         f"https://{HARNESS_URL}/gateway/v1/app-config",
         headers=HEADERS,
