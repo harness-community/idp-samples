@@ -90,16 +90,15 @@ def main() -> str:
         )
 
         # use delegate for connections
-        proxy.append(
-            {
-                "host": url,
-                "proxy": True,
-                "selectors": delegates,
-                "pluginId": "kubernetes",
-            }
-        )
-
-        print(f"added {id}")
+        if delegates:
+            proxy.append(
+                {
+                    "host": url,
+                    "proxy": True,
+                    "selectors": delegates,
+                    "pluginId": "kubernetes",
+                }
+            )
 
     resp = post(
         f"https://{HARNESS_URL}/gateway/v1/app-config",
