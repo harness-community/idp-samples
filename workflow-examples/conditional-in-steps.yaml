@@ -25,21 +25,21 @@ spec:
   steps:
     - id: development_step
       name: Only development environments
-      if: ${{ parameters.environment === 'staging' || parameters.environment === 'development' }}
+      if: ${{ parameters.environment === 'staging' or parameters.environment === 'development' }}
       action: debug:log
       input:
         message: 'This is a development or staging step.'
 
     - id: production_step
       name: Only production environments
-      if: ${{ parameters.environment === 'prod' || parameters.environment === 'production' }}
+      if: ${{ parameters.environment === 'prod' or parameters.environment === 'production' }}
       action: debug:log
       input:
         message: 'This is a production step.'
 
     - id: non_production_step
       name: Non-production environments
-      if: ${{ parameters.environment !== 'prod' && parameters.environment !== 'production' }}
+      if: ${{ parameters.environment !== 'prod' and parameters.environment !== 'production' }}
       action: debug:log
       input:
         message: 'This is a non-production step.'
