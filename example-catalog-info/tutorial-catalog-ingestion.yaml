@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: Warehouse
+  name: warehouse
   description: Service Responsible for warehouse management. 
   annotations:
     backstage.io/techdocs-ref: dir:.
