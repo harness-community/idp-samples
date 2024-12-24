@@ -1,0 +1,64 @@
+### Complete Example of a service onboarding template.yaml
+
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+# some metadata about the template itself
+metadata:
+  name: new-service-with-cookiecutter
+  title: Create a new service corresponding to the JIRA Project
+  description: A template to create a new service
+  tags:
+    - nextjs
+    - react
+    - javascript
+# these are the steps which are rendered in the frontend with the form input
+spec:
+  owner: debabrata.panigrahi@harness.io
+  type: service
+  parameters:
+    - title: Service Details
+      required:
+        - template_type
+        - public_template_url
+      properties:
+        template_type:
+          title: Type of the Template
+          type: string
+          description: Type of the Template
+        public_template_url:
+          title: Give a Public template URL
+          type: string
+          description: Give a Public Cookiecutter Template  
+        jiraprojectID:
+            title: Jira Project Key
+            type: string
+            description: The key for your JIRA project
+            ui:field: EntityFieldPicker
+            ui:displayField: metadata.jiraProjectId
+            ui:options:
+            catalogFilter:
+                kind: 
+                - Component
+                - Service
+        # This field is hidden but needed to authenticate the request to trigger the pipeline
+        token:
+          title: Harness Token
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken
+  # here's the steps that are executed in series in the scaffolder backend
+  steps:
+    - id: trigger
+      name: Creating your react app
+      action: trigger:harness-custom-pipeline
+      input:
+        url: "Your PIPELINE URL"
+        inputset:
+          template_type: ${{ parameters.template_type }}
+          public_template_url: ${{ parameters.public_template_url }}
+        apikey: ${{ parameters.token }}
+  # some outputs which are saved along with the job for use in the frontend
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}

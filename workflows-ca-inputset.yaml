@@ -1,0 +1,52 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: test-custom-action
+  title: Test New Custom Actions
+  description: New custom action to trigger harness pipeline using inputset
+  tags:
+    - inputset
+spec:
+  owner: debabrata.panigrahi
+  type: service
+  parameters:
+    - title: Service Details
+      required:
+        - inputSetName
+        - triggerName
+      properties:
+        inputSetName:
+          title: Name your Input Set
+          type: string
+          description: Unique Name for Inputset
+        triggerName:
+          title: Name for Trigger
+          type: string
+          description: Name for Trigger
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: Group
+        token:
+          title: Harness Token
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken
+  steps:
+    - id: trigger
+      name: Creating your react app
+      action: trigger:trigger-pipeline-with-webhook
+      input:
+        url: "https://qa.harness.io/ng/account/zg/idp-admin/orgs/default/projects/idptestproject/pipelines/idpnewcustomaction/pipeline-studio/?storeType=INLINE"
+        inputSetName: ${{ parameters.inputSetName }}
+        triggerName: ${{ parameters.triggerName }}
+        apikey: ${{ parameters.token }}
+    # The final step is to register our new component in the catalog.
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}

@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: grpc-docs-test
+spec:
+  type: grpc-docs
+  lifecycle: production
+  owner: group:engineering
+  definition:
+    $text: https://github.com/pseudomuto/protoc-gen-doc/blob/master/examples/doc/example.json

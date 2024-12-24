@@ -1,0 +1,210 @@
+pipeline:
+  name: Django Service
+  identifier: fetchfromcustom
+  projectIdentifier: CIQuickstart
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: Creating Django Service
+        identifier: fetchfromcustom
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: Git clone
+                  identifier: Git_clone
+                  spec:
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: |-
+                          #precleanup incase pipeline fails
+                          rm -rf output/
+                          rm -rf cookiecutter-django
+                          # Cloning
+                          git clone https://github.com/cookiecutter/cookiecutter-django.git
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+              - step:
+                  type: ShellScript
+                  name: Templatize
+                  identifier: Templatize
+                  spec:
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: |-
+                          pip3 install cookiecutter
+                          python3 -m cookiecutter cookiecutter-django --no-input project_name="<+pipeline.variables.name>" --output-dir=output/
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+              - step:
+                  type: HarnessApproval
+                  name: HarnessApproval_1
+                  identifier: HarnessApproval_1
+                  spec:
+                    approvalMessage: Please review the following information and approve the pipeline progression
+                    includePipelineExecutionHistory: true
+                    approvers:
+                      userGroups:
+                        - account._account_all_users
+                      minimumCount: 1
+                      disallowPipelineExecutor: false
+                    approverInputs: []
+                  timeout: 1d
+                  when:
+                    stageStatus: Success
+                  failureStrategies: []
+              - step:
+                  type: ShellScript
+                  name: Create Repository
+                  identifier: Create_Repository
+                  spec:
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: "curl -L -X POST -H \"Accept: application/vnd.github+json\" -H \"Authorization: Bearer <+stage.variables.GITHUB_PASSWORD>\" https://api.github.com/user/repos  -d '{\"name\":\"<+pipeline.variables.repository>\",\"description\":\"This is your Django Service created by Harness IDP\",\"private\":false}'"
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+              - step:
+                  type: ShellScript
+                  name: "Push Repository "
+                  identifier: Push_Repository
+                  spec:
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: |-
+                          cd output/
+                          cd <+pipeline.variables.name>/
+                          git init -b main
+                          git config --global user.email "test@harness.io"
+                          git config --global user.name "Test"
+                          git add .
+                          git commit -m "Initial Django Service Setup"
+                          git remote add origin https://github.com/SarvJ1/<+pipeline.variables.repository>.git
+                          # git push origin main 
+                          git push https://<+stage.variables.GITHUB_PASSWORD>@github.com/<+stage.variables.USERNAME>/<+pipeline.variables.repository>.git
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+              - step:
+                  type: ShellScript
+                  name: Cleanup
+                  identifier: Cleanup
+                  spec:
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: |-
+                          rm -rf output/
+                          rm -rf cookiecutter-django
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+              - step:
+                  type: JiraCreate
+                  name: Notify SRE on Jira
+                  identifier: JiraCreate_1
+                  spec:
+                    connectorRef: Jira
+                    projectKey: IDP
+                    issueType: Task
+                    fields:
+                      - name: NextGen
+                        value: "No"
+                      - name: Description
+                        value: "Hey Team, We are deploying our new Django Service <+pipeline.variables.name> using <+pipeline.variables.provider> . We have the following infrastructure requirements .  1)Database System: <+pipeline.variables.db>      2)Cache System: <+pipeline.variables.cache>  3) Python linter: <+pipeline.variables.lint>"
+                      - name: Summary
+                        value: Creating new Django Service (<+pipeline.variables.name>)
+                  timeout: 10m
+                  when:
+                    stageStatus: Success
+                  failureStrategies: []
+        tags: {}
+        variables:
+          - name: USERNAME
+            type: String
+            description: ""
+            value: SarvJ1
+          - name: GITHUB_PASSWORD
+            type: Secret
+            description: ""
+            value: pat
+        when:
+          pipelineStatus: Success
+          condition: "false"
+    - stage:
+        name: Build
+        identifier: Build
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: newconnector
+              namespace: harness-delegate-ng
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
+          execution:
+            steps:
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: Docker_Quickstart
+                    repo: sarvagnyajatti/ciquickstart
+                    tags:
+                      - <+pipeline.pipeline.sequenceId>
+                      - latest
+  variables:
+    - name: repository
+      type: String
+      description: ""
+      value: <+input>
+    - name: db
+      type: String
+      description: ""
+      value: <+input>
+    - name: lint
+      type: String
+      description: ""
+      value: <+input>
+    - name: provider
+      type: String
+      description: ""
+      value: <+input>
+    - name: name
+      type: String
+      description: ""
+      value: <+input>
+    - name: cache
+      type: String
+      description: ""
+      value: <+input>
+  properties:
+    ci:
+      codebase:
+        connectorRef: CI_github
+        build: <+input>

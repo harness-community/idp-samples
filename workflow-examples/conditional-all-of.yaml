@@ -1,0 +1,91 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: example-all-of-template
+  title: Example AllOf Template
+  description: A template to display the conditional allOf
+spec:
+  owner: owner@company.com
+  type: service
+  parameters:
+    - title: Infrastructure Provisioning
+      type: object
+      required:
+        - environment_type
+        - owner
+      properties:
+        owner:
+          title: Choose an Owner for the Service
+          type: string
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+        # This field is hidden but needed to authenticate the request to trigger the pipeline
+        token:
+          title: Harness Token
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken
+        environment_type:
+          title: Environment Type
+          type: string
+          description: Name of the environment where you want to provision a resource
+          enum:
+            - dev
+            - staging
+            - prod
+        infracomponent:
+          title: Infra Component
+          type: object
+          properties:
+            resource_type:
+              title: Resource Type
+              type: string
+              description: Name of the resource that you want to provision
+              enum:
+                - s3
+                - vpc
+                - sns
+                - glue
+                - sqs
+          required:
+            - resource_type
+          dependencies:
+            resource_type:
+              allOf:
+                - properties:
+                    resource_type:
+                      enum:
+                        - s3
+                        - vpc
+                  required:
+                    - resource_type
+                - properties:
+                    Operationtype:
+                      $ref: "#/myregion/operation"
+      myregion:
+        operation:
+          title: Region
+          type: object
+          properties:
+            ChooseRegion:
+              type: string
+              enum:
+                - Region A
+                - Region B
+                - Region C
+  steps:
+    - id: trigger
+      name: Provision Infrastructure
+      action: trigger:harness-custom-pipeline
+      input:
+        url: "YOUR_PIPELINE_URL"
+        inputset:
+          resource_type: ${{ parameters.infracomponent.resource_type }}
+          environment_type: ${{ parameters.environment_type }}
+        apikey: ${{ parameters.token }}
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}

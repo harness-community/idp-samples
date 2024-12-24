@@ -1,0 +1,50 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: conditional-environment-template
+  title: Conditional Environment Template
+  description: A template demonstrating conditional execution based on environment type
+spec:
+  owner: owner@company.com
+  type: service
+  parameters:
+    - title: Environment Selection
+      type: object
+      required:
+        - environment
+      properties:
+        environment:
+          title: Select Environment
+          type: string
+          description: Choose the environment for this operation
+          enum:
+            - development
+            - staging
+            - production
+            - prod
+  steps:
+    - id: development_step
+      name: Only development environments
+      if: ${{ parameters.environment === 'staging' or parameters.environment === 'development' }}
+      action: debug:log
+      input:
+        message: 'This is a development or staging step.'
+
+    - id: production_step
+      name: Only production environments
+      if: ${{ parameters.environment === 'prod' or parameters.environment === 'production' }}
+      action: debug:log
+      input:
+        message: 'This is a production step.'
+
+    - id: non_production_step
+      name: Non-production environments
+      if: ${{ parameters.environment !== 'prod' and parameters.environment !== 'production' }}
+      action: debug:log
+      input:
+        message: 'This is a non-production step.'
+
+  output:
+    links:
+      - title: View Environment Logs
+        url: 'https://your-log-service-url/${{ steps.development_step.output || steps.production_step.output || steps.non_production_step.output }}'

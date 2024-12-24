@@ -1,0 +1,83 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: Deploy k8s service
+  title: Deploy a Kubernetes Service
+  description: Uses Harness CD to deploy a kubernetes service.
+spec:
+  owner: cd_team
+  type: environment
+  parameters:
+    - title: Select Harness Project and Org
+    type: object
+    properties:
+      projectId:
+        title: Harness Project ID
+        description: Select the Harness Project ID
+        type: string
+        ui:field: HarnessProjectPicker
+        ui:autofocus: true
+      organizationId:
+        title: Harness Organization ID
+        description: Select the Harness Organization ID
+        type: string
+        ui:field: HarnessAutoOrgPicker
+    - title: Service, Environment and Infrastructure Details
+      required:
+        - service
+        - environment
+        - infrastructure
+      properties:
+        service:
+          type: string
+          ui:field: SelectFieldFromApi
+          ui:options:
+            title: Choose the service
+            description: Pick one of the service you want to deploy
+            placeholder: "Choose a service"
+            allowArbitraryValues: true
+            path: proxy/harness-api-endpoint/ng/api/servicesV2?page=0&size=100&accountIdentifier=ACCOUNT_ID&orgIdentifier={{parameters.organizationId}}&projectIdentifier={{parameters.projectId}}&includeAllServicesAccessibleAtScope=true
+            valueSelector: 'service.name'
+            arraySelector: 'data.content'
+        environment:
+          type: string
+          ui:field: SelectFieldFromApi
+          ui:options:
+            title: Choose the environment
+            description: Pick the environment where you want to deploy
+            placeholder: "Choose a environment"
+            allowArbitraryValues: true
+            path: proxy/harness-api-endpoint/ng/api/environmentsV2?page=0&size=100&accountIdentifier=ACCOUNT_ID&orgIdentifier={{parameters.organizationId}}&projectIdentifier={{parameters.projectId}}
+            valueSelector: 'environment.name'
+            arraySelector: 'data.content'
+        infrastructure:
+          type: string
+          ui:field: SelectFieldFromApi
+          ui:options:
+            title: Choose the infrastructure
+            description: The infrastructure to deploy to (e.g., AWS, GCP, Azure)
+            placeholder: "Choose an infrastructure"
+            allowArbitraryValues: true
+            path: proxy/harness-api-endpoint/ng/api/infrastructures?page=0&size=100&environmentIdentifier=ENV_ID&accountIdentifier=ACCOUNT_ID&orgIdentifier={{parameters.organizationId}}&projectIdentifier={{parameters.projectId}}
+            valueSelector: 'infrastructure.name'
+            arraySelector: 'data.content'
+        token:
+          title: Harness Token
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken
+  steps:
+    - id: trigger
+      name: Deploy your Application
+      action: trigger:harness-custom-pipeline
+      input:
+        url: YOUR PIPELINE URL HERE
+        inputset:
+          pipeline.variables.service: ${{ parameters.service }}
+          pipeline.variables.infrastructure: ${{ parameters.infrastructure }}
+          pipeline.variables.environment: ${{ parameters.environment }}
+        apikey: ${{ parameters.token }}
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}

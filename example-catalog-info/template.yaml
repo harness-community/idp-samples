@@ -1,0 +1,64 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: new-application
+  title: Create a new application
+  description: A template to create a new react app
+  tags:
+    - nextjs
+    - react
+    - javascript
+    - secret
+spec:
+  owner: name@company.io
+  type: service
+  # Edit the template parameters below to see how they will render in the scaffolder form UI
+  parameters:
+    - title: Let us know what you want to create
+      required:
+        - techStack
+      properties:
+        techStack:
+          title: Choose a Tech Stack
+          type: string
+          enum: ["Java", ".Net"]
+          default: Java
+        version:
+          title: Choose the version
+          type: string
+          enum: ["java8", "java14"]
+          default: java8
+        buildSystem:
+          title: Choose the build system
+          type: string
+          enum: ["maven", "gradle"]
+          default: maven
+        buildVersion:
+          title: Choose the build version
+          type: string
+          enum: ["maven3.1", "maven3.2"]
+          default: "maven3.1"
+
+        # This field is hidden but needed to authenticate the request to trigger the pipeline
+        token:
+          title: Harness Token
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken
+  steps:
+    - id: trigger
+      name: Creating your react app
+      action: trigger:harness-custom-pipeline
+      input:
+        url: "https://app.harness.io/ng/account/vpCkA/home/orgs/QE_Team/projects/Qunce/pipelines/IDP_app/pipeline-studio/?storeType=INLINE"
+        inputset:
+          techStack: ${{ parameters.techStack }}
+          version: ${{ parameters.version }}
+          buildSystem: ${{ parameters.buildSystem }}
+          buildVersion: ${{ parameters.buildVersion }}
+        apikey: ${{ parameters.token }}
+
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}

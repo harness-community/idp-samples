@@ -1,0 +1,63 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: jira-project
+  title: Create a JIRA Project
+  description: A template to create a Jira Project
+  tags:
+    - jira
+    - management
+spec:
+  owner: owner@company.com
+  type: service
+  parameters:
+    - title: Service Details
+      required:
+        - projectkey
+        - projectname
+        - templatekey
+        - usergroup
+      properties:
+        projectkey:
+          title: Jira Project Key
+          type: string
+          default: DEMO
+          description: Your Project will have this key which will appear in the url
+        projectname:
+          type: string
+          title: Add a project name
+          default: demo
+        templatekey:
+          type: string
+          title: Add the template type
+          desciption: Select and add a template     
+        usergroup:
+          title: Choose an Owner for the Service
+          type: string
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+        # This field is hidden but needed to authenticate the request to trigger the pipeline
+        token:
+          title: Harness Token
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken
+  steps:
+    - id: trigger
+      name: Bootstrapping your new service
+      action: trigger:harness-custom-pipeline
+      input:
+        url: "PIPELINE URL"
+        inputset:
+          projectkey: ${{ parameters.projectkey }}
+          projectname: ${{ parameters.projectname }}
+          templatekey: ${{ parameters.templatekey }}
+          usergroup: ${{ parameters.usergroup }}
+        apikey: ${{ parameters.token }}
+
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}

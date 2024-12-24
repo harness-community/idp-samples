@@ -1,0 +1,48 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  tags:
+    - java
+    - user
+  name: user-service
+  annotations:
+    backstage.io/techdocs-ref: https://github.com/vikyathharekal/order-service/tree/main/docs
+    harness.io/project-url: https://qa.harness.io/ng/account/zEUg/home/orgs/default/projects/vigneshproject/details
+    gitlab.com/project-id: '437214'
+    jira/project-key: IDP
+    jenkins.io/github-folder: 'CDS-68313'
+    firehydrant.com/service-name: 'python-pipeline-samples'
+    backstage.io/kubernetes-label-selector: 'app=idp-ui'
+    backstage.io/kubernetes-namespace: '63c798c4bdc'
+    github.com/project-slug: vigneswara-propelo/python-pipeline-samples
+    harness.io/pipelines: |
+      Build: https://stress.harness.io/ng/account/w/all/orgs/default/projects/idptestharness/pipelines/cipipelinetest/executions/Etw/pipeline?storeType=INLINE
+    harness.io/services: |
+      cd: https://stress.harness.io/ng/account/pxvw/cd/orgs/default/projects/idptestharness/services/testservice
+    pagerduty.com/service-id: PNWY
+#     snyk.io/org-name: vigneswara-propelo
+#     snyk.io/project-ids: 7c7766e6-1aacb227, 4addb946-2ff480193ee
+  links:
+    - url: https://admin.example-org.com
+      title: Admin Dashboard
+      icon: dashboard
+      type: admin-dashboard
+    - url: https://admin.example-org.com
+      title: QA Environment
+      icon: dashboard
+      type: admin-dashboard
+    - url: https://admin.example-org.com
+      title: Staging Environment
+      icon: dashboard
+      type: admin-dashboard
+    - url: https://admin.example-org.com
+      title: Production Environment
+      icon: dashboard
+      type: admin-dashboard
+spec:
+  type: service
+  system: platform
+  lifecycle: production
+  owner: Harness_Account_All_Users
+  providesApis: 
+    - accesscontrol-service

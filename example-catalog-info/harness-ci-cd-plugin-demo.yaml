@@ -1,0 +1,40 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: my-new-service
+  description: Description of my new service
+  annotations:
+       harness.io/project-url: https://app.harness.io/ng/#/account/vTMKA/home/orgs/default/projects/PREQA_NG_Pipelines/details
+       github.com/project-slug: harness/harness-core-ui
+       grafana/dashboard-selector: "folderUrl == 'https://grafana.harness.io/dashboards/f/Xk/sto' || folderUrl == 'https://grafana.harness.io/dashboards/f/3oaz/cie'"
+       grafana/alert-label-selector: "destination=sto-prod-slack"
+       grafana/overview-dashboard: "https://grafana.harness.io/d/-k/sto-core-and-ticket-service?orgId=1"
+       jira/project-key: IDP
+       pagerduty.com/service-id: PX97
+  tags:
+    - java
+  
+  links:
+    - url: https://example.com/user
+      title: Examples Users
+      icon: user
+    - url: https://example.com/group
+      title: Example Group
+      icon: group
+    - url: https://example.com/cloud
+      title: Link with Cloud Icon
+      icon: cloud
+    - url: https://example.com/dashboard
+      title: Dashboard
+      icon: dashboard
+    - url: https://example.com/help
+      title: Support
+      icon: help
+spec:
+  type: service
+  lifecycle: production
+  owner: asdf
+  dependsOn:
+    - resource:default/artists-db
+  providesApis:
+    - artist-api

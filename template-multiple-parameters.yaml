@@ -1,0 +1,131 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: location-selection-template
+  title: Location Selection Template
+  description: A template for selecting various locations using different UI components.
+spec:
+  owner: backstage-team
+  type: service
+
+  parameters:
+    properties:
+      location:
+        title: Location
+        description: Select a single location
+        ui:field: EntityPicker
+        ui:options:
+          catalogFilter:
+            - kind: Location
+        enumNames:
+          - New York
+          - Amsterdam
+          - Hong Kong
+        enum:
+          - name: New York
+            lat: 40
+            lon: 74
+          - name: Amsterdam
+            lat: 52
+            lon: 5
+          - name: Hong Kong
+            lat: 22
+            lon: 114
+
+      locationRadio:
+        title: Location Radio
+        description: Select one location via radio buttons
+        ui:field: Radio
+        ui:options:
+          catalogFilter:
+            - kind: Location
+        enumNames:
+          - New York
+          - Amsterdam
+          - Hong Kong
+        enum:
+          - name: New York
+            lat: 40
+            lon: 74
+          - name: Amsterdam
+            lat: 52
+            lon: 5
+          - name: Hong Kong
+            lat: 22
+            lon: 114
+
+      multiSelect:
+        title: Locations
+        description: Select multiple locations
+        type: array
+        uniqueItems: true
+        ui:field: MultiEntityPicker
+        ui:options:
+          catalogFilter:
+            - kind: Location
+        items:
+          enumNames:
+            - New York
+            - Amsterdam
+            - Hong Kong
+          enum:
+            - name: New York
+              lat: 40
+              lon: 74
+            - name: Amsterdam
+              lat: 52
+              lon: 5
+            - name: Hong Kong
+              lat: 22
+              lon: 114
+
+      checkboxes:
+        title: Locations Checkboxes
+        description: Select multiple locations via checkboxes
+        type: array
+        uniqueItems: true
+        ui:field: CheckboxGroup
+        ui:options:
+          catalogFilter:
+            - kind: Location
+        items:
+          enumNames:
+            - New York
+            - Amsterdam
+            - Hong Kong
+          enum:
+            - name: New York
+              lat: 40
+              lon: 74
+            - name: Amsterdam
+              lat: 52
+              lon: 5
+            - name: Hong Kong
+              lat: 22
+              lon: 114
+
+    required:
+      - location
+      - locationRadio
+      - multiSelect
+      - checkboxes
+
+  steps:
+    - id: select-locations
+      name: Select Locations
+      action: debug
+      input:
+        location: '{{parameters.location}}'
+        locationRadio: '{{parameters.locationRadio}}'
+        multiSelect: '{{parameters.multiSelect}}'
+        checkboxes: '{{parameters.checkboxes}}'
+
+    - id: show-result
+      name: Show Selected Locations
+      action: debug
+      input:
+        message: |
+          Selected location: {{steps.select-locations.output.location}}
+          Selected radio location: {{steps.select-locations.output.locationRadio}}
+          Selected multi-locations: {{steps.select-locations.output.multiSelect}}
+          Selected checkboxes locations: {{steps.select-locations.output.checkboxes}}

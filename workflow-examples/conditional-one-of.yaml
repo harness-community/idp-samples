@@ -1,0 +1,38 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: example-template
+  title: Example Template
+  description: A template demonstrating conditional validation using oneOf
+spec:
+  type: service
+  parameters:
+    - title: Choose a field
+      oneOf:
+        - properties:
+            lorem:
+              type: string
+              title: Lorem
+              description: 'A string for lorem.'
+          required:
+            - lorem
+        - properties:
+            ipsum:
+              type: string
+              title: Ipsum
+              description: 'A string for ipsum.'
+          required:
+            - ipsum
+  steps:
+    - id: display-fields
+      name: Display Selected Fields
+      action: debug:log
+      input:
+        message: |
+          You have provided the following field:
+          {% if parameters.lorem %}
+          - Lorem: {{ parameters.lorem }}
+          {% endif %}
+          {% if parameters.ipsum %}
+          - Ipsum: {{ parameters.ipsum }}
+          {% endif %}

@@ -1,0 +1,29 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: fetch-template-example
+  title: Fetch Template Example
+  description: A template showcasing conditional fetching of a path
+spec:
+  owner: owner@company.com
+  type: service
+  parameters:
+    - title: Fetch Path Input
+      type: object
+      properties:
+        path:
+          title: Path
+          type: string
+          description: Enter the path to fetch. Defaults to `/root` if not provided.
+
+  steps:
+    - id: fetch
+      name: Fetch Template
+      action: fetch:template
+      input:
+        url: ${{ parameters.path if parameters.path else '/root' }}
+
+  output:
+    links:
+      - title: View Fetched Template
+        url: 'https://your-repository-url/${{ parameters.path if parameters.path else '/root' }}

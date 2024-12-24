@@ -1,0 +1,24 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: FoodService
+  description: Service Responsible for food ordering. 
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    pagerduty.com/integration-key: <sample-service-integration-key>
+  additionalInfo:
+    offShoreTeamLead: Dan John
+  tags:
+    - java
+    - tag1
+    - food-ordering
+  links:
+    - url: https://admin.example-org.com
+      title: Admin Dashboard
+      icon: dashboard
+      type: admin-dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: harness_account_all_users
+  system: project-x
