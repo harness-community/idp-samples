@@ -16,5 +16,5 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: debabrata.panigrahi@harness.io
+  owner: owner@harness.io
   system: project-x
