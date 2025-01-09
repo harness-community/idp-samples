@@ -75,17 +75,17 @@ spec:
                           - Region A
                           - Region B
                           - Region C
-      steps:
-        - id: trigger
-          name: Provision Infrastructure
-          action: trigger:harness-custom-pipeline
-          input:
-            url: "YOUR_PIPELINE_URL"
-            inputset:
-              resource_type: ${{ parameters.resource_type }}
-              environment_type: ${{ parameters.environment_type }}
-            apikey: ${{ parameters.token }}
-      output:
-        links:
-          - title: Pipeline Details
-            url: ${{ steps.trigger.output.PipelineUrl }}
+  steps:
+    - id: trigger
+      name: Provision Infrastructure
+      action: trigger:harness-custom-pipeline
+      input:
+        url: "YOUR_PIPELINE_URL"
+        inputset:
+          resource_type: ${{ parameters.resource_type }}
+          environment_type: ${{ parameters.environment_type }}
+        apikey: ${{ parameters.token }}
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}
