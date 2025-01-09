@@ -1,0 +1,58 @@
+parameters:
+  - title: Artifact Information
+    description: Details on Artifact Information
+    type: object
+    properties:
+      artifact_type:
+        title: Select artifact type
+        type: object
+        properties:
+          select_artifact_type:
+            description: Choose the artifact you want to use from below drop down.
+            type: string
+            enum:
+              - Docker
+              - Zip
+        required:
+          - select_artifact_type
+        dependencies:
+          select_artifact_type:
+            oneOf:
+              - properties:
+                  select_artifact_type:
+                    description: Docker Artifact is Selected.
+                    enum:
+                      - Docker
+                  DockerImage:
+                    description: Choose this variable to select the docker image version.
+                    type: string
+                    enum:
+                      - docker1
+                      - docker2
+                      - docker3
+                      - docker4
+                      - docker5
+                required:
+                  - DockerImage
+              - properties:
+                  select_artifact_type:
+                    description: Zip Artifact is Selected.
+                    enum:
+                      - Zip
+                  ZipImage:
+                    description: Choose the ZipImage.
+                    type: string
+                    enum:
+                      - zip1
+                      - zip2
+                      - zip3
+                      - zip4
+                  Packaging:
+                    description: Choose the packaging type for Zip image.
+                    type: string
+                    enum:
+                      - jar
+                      - war
+                required:
+                  - ZipImage
+                  - Packaging
