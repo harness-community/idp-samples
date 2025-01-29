@@ -1,0 +1,112 @@
+pipeline:
+  name: dockerfile-verifications
+  identifier: dockerverifications
+  projectIdentifier: IDP
+  orgIdentifier: SDTK
+  tags: {}
+  stages:
+    - stage:
+        name: idp_repo_scanner
+        identifier: idp_repo_scanner
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: false
+          execution:
+            steps:
+              - step:
+                  type: GitClone
+                  name: GitCloneComplianceScripts
+                  identifier: GitCloneComplianceScripts
+                  spec:
+                    connectorRef: account.svc_harness_git1
+                    repoName: harness-infra
+                    build:
+                      type: branch
+                      spec:
+                        branch: <+pipeline.variables.idp_script_branch>
+                  when:
+                    stageStatus: Success
+              - step:
+                  type: Run
+                  name: FetchDefaultBranch
+                  identifier: FetchDefaultBranch
+                  spec:
+                    connectorRef: org.dallindockerhubsdtk
+                    image: python:3.14.0a2-alpine3.20
+                    shell: Sh
+                    command: |-
+                      echo "Processing repo <+matrix.repo_name>"
+                      pip install  pyyaml requests
+                      python3 /harness/harness-infra/idp/fetch-repo-default-branch.py\
+                        --ghpattoken <+pipeline.variables.GITHUB_TOKEN>\
+                        --ghrepo acme/<+matrix.repo_name>
+
+                      echo "Default branch is"
+                      cat default_branch.txt
+                      export SERVICE_DEFAULT_BRANCH=$(cat default_branch.txt)
+                    outputVariables:
+                      - name: SERVICE_DEFAULT_BRANCH
+                        type: String
+                        value: SERVICE_DEFAULT_BRANCH
+              - step:
+                  type: GitClone
+                  name: GitCloneServiceRepo
+                  identifier: GitCloneService
+                  spec:
+                    connectorRef: account.svc_harness_git1
+                    repoName: <+matrix.repo_name>
+                    build:
+                      type: branch
+                      spec:
+                        branch: <+execution.steps.FetchDefaultBranch.output.outputVariables.SERVICE_DEFAULT_BRANCH>
+              - step:
+                  type: Run
+                  name: Run Docker Verifications
+                  identifier: Run_custom_checks
+                  spec:
+                    connectorRef: org.dallindockerhubsdtk
+                    image: python:3.14.0a2-alpine3.20
+                    shell: Sh
+                    command: |-
+                      echo "Processing repo <+matrix.repo_name>"
+                      pip install  requests pyyaml docker
+                      python3 /harness/harness-infra/idp/docker-basetag-check.py\
+                        --dockerfile_path /harness/<+matrix.repo_name>/Dockerfile\
+                        --catalog_entity default/<+matrix.repo_name>\
+                        --harness_account_id <+account.identifier>\
+                        --harness_api_token <+pipeline.variables.HARNESS_TOKEN>
+                  when:
+                    stageStatus: Success
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+        strategy:
+          matrix:
+            repo_name:
+              - demo-service
+              - test-service
+              - abc-service
+            parallelism: 5
+        failureStrategies:
+          - onFailure:
+              errors: []
+              action:
+                type: MarkAsFailure
+  variables:
+    - name: HARNESS_TOKEN
+      type: Secret
+      value: org.harness_idp_token
+    - name: idp_script_branch
+      type: String
+      description: ""
+      required: false
+      value: main
+    - name: GITHUB_TOKEN
+      type: Secret
+      description: ""
+      required: false
+      value: account.githubpatsvcharnessgit2
