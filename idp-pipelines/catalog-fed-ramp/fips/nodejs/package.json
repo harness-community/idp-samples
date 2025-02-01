@@ -1,0 +1,14 @@
+{
+    "name": "fips-check",
+    "version": "1.0.0",
+    "description": "FIPS check script in Node.js",
+    "main": "fips_check.js",
+    "scripts": {
+      "test": "node fips_check.js"
+    },
+    "dependencies": {},
+    "devDependencies": {},
+    "author": "datarobot",
+    "license": "ISC"
+  }
+  

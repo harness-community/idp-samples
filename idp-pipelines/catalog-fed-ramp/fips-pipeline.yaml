@@ -1,0 +1,147 @@
+pipeline:
+  projectIdentifier: IDP
+  orgIdentifier: SDTK
+  tags: {}
+  stages:
+    - stage:
+        name: fips compliance
+        identifier: idp_repo_scanner
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: false
+          execution:
+            steps:
+              - step:
+                  type: Background
+                  name: DockerBackground
+                  identifier: DockerBackground
+                  spec:
+                    connectorRef: account.harnessImage
+                    image: docker:dind
+                    shell: Sh
+                    privileged: true
+                    entrypoint:
+                      - dockerd-entrypoint.sh
+                      - "--mtu=1450"
+              - step:
+                  type: GitClone
+                  name: GitCloneComplianceScripts
+                  identifier: GitCloneComplianceScripts
+                  spec:
+                    connectorRef: account.svc_harness_git1
+                    repoName: harness-infra
+                    build:
+                      type: branch
+                      spec:
+                        branch: <+pipeline.variables.idp_script_branch>
+                  when:
+                    stageStatus: Success
+              - step:
+                  type: Run
+                  name: FetchDefaultBranch
+                  identifier: FetchDefaultBranch
+                  spec:
+                    connectorRef: org.dallindockerhubsdtk
+                    image: python:3.14.0a2-alpine3.20
+                    shell: Sh
+                    command: |-
+                      echo "Processing repo <+matrix.repo_name>"
+                      pip install  pyyaml requests
+                      python3 /harness/harness-infra/idp/fetch-repo-default-branch.py\
+                        --ghpattoken <+pipeline.variables.GITHUB_TOKEN>\
+                        --ghrepo acme/<+matrix.repo_name>
+
+                      echo "Default branch is"
+                      cat default_branch.txt
+                      export SERVICE_DEFAULT_BRANCH=$(cat default_branch.txt)
+                    outputVariables:
+                      - name: SERVICE_DEFAULT_BRANCH
+                        type: String
+                        value: SERVICE_DEFAULT_BRANCH
+              - step:
+                  type: GitClone
+                  name: GitCloneService
+                  identifier: GitCloneService
+                  spec:
+                    connectorRef: account.svc_harness_git1
+                    repoName: <+matrix.repo_name>
+                    build:
+                      type: branch
+                      spec:
+                        branch: <+execution.steps.FetchDefaultBranch.output.outputVariables.SERVICE_DEFAULT_BRANCH>
+              - step:
+                  type: Run
+                  name: Run_crypto_fips_checks
+                  identifier: Run_custom_checks
+                  spec:
+                    connectorRef: org.dallindockerhubsdtk
+                    image: python:3.14.0a2-alpine3.20
+                    shell: Sh
+                    command: |-
+                      echo "Processing repo <+matrix.repo_name>"
+                      pip install  requests pyyaml docker 
+                      pip install --upgrade docker
+                      pip show docker
+
+                      apk add docker
+
+                      docker login -u <+pipeline.variables.DOCKERHUB_USERNAME> -p <+pipeline.variables.DOCKERHUB_PASSWORD>
+
+                      python3  /harness/harness-infra/idp/fips-validator.py \
+                        --dockerfile_path /harness/<+matrix.repo_name>/Dockerfile\
+                        --base_dir=/harness\
+                        --harness_account_id=<+account.identifier>\
+                        --harness_api_token <+pipeline.variables.HARNESS_TOKEN>\
+                        --catalog_entity default/<+matrix.repo_name> 
+                        #--test_registry_url=datarobotdev/platform-base-nodejs-runtime:latest-ironbank \
+                        #--test_language=nodejs
+                  when:
+                    stageStatus: Success
+          sharedPaths:
+            - /var/run
+            - /var/lib/docker
+          caching:
+            enabled: false
+            paths: []
+          buildIntelligence:
+            enabled: false
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+        strategy:
+          matrix:
+            repo_name:
+              - demo-service
+              - test-service
+              - abc-service
+            parallelism: 5
+        failureStrategies:
+          - onFailure:
+              errors:
+                - Timeout
+              action:
+                type: MarkAsFailure
+  variables:
+    - name: DOCKERHUB_USERNAME
+      type: String
+      value: dallindr
+    - name: DOCKERHUB_PASSWORD
+      type: Secret
+      value: org.dallindockerhubpatsdtk
+    - name: GITHUB_TOKEN
+      type: Secret
+      value: account.githubpatsvcharnessgit2
+    - name: HARNESS_TOKEN
+      type: Secret
+      value: org.harness_idp_token
+    - name: idp_script_branch
+      type: String
+      description: ""
+      required: false
+      value: main
+  identifier: fipspythontest
+  name: fips-verifications
