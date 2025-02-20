@@ -1,0 +1,75 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: workflow-api-test
+  title: workflow-api-test
+  description: workflow-api-test
+spec:
+  tag:
+    self-service
+    eks
+  owner: service.owner
+  type: resource
+  parameters:
+    - title: "Page1"
+      properties:
+        token:
+          title: "Harness Token"
+          type: string
+          ui:widget: password
+          ui:field: HarnessAuthToken      
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: MyGroupsPicker
+        environment:
+          title: Select Environment
+          type: string
+          enum:
+            - non-prod
+            - prod
+      dependencies:
+        environment:
+          oneOf:
+            - properties:
+                  environment:
+                    enum:
+                      - non-prod
+                  environment-type:
+                    title: Select environment type
+                    type: string
+                    enum:
+                      - dev
+                      - test
+                      - int
+                      - perf
+            - properties:
+                  environment:
+                    enum:
+                      - prod
+                  environment-type:
+                    title: Select environment type
+                    type: string
+                    enum:
+                      - stage
+                      - prod         
+  steps:
+    - id: trigger
+      name: Create-eks-cluster
+      action: trigger:harness-custom-pipeline
+      input:
+        url: 
+        inputset:
+          owner: ${{ parameters.owner }}
+          environment: ${{ parameters.environment }}
+          environment-type: ${{ parameters.environment-type }}
+        apikey: ${{ parameters.token }}
+        showOutputVariables: true
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}
+
+
+        
