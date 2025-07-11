@@ -1,124 +1,27 @@
-apiVersion: harness.io/v1
-kind: Workflow
-name: Hide Uploaded File in Review
-identifier: hide_uploaded_file_in_review
-type: service
-owner: group:account/AccAdmin
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
 metadata:
-  description: Hide uploaded file contents in workflow review page.
-  annotations:
-    backstage.io/source-location: url:https://github.com/harness-community/idp-samples/tree/main/
-  tags:
-    - spotify
-    - data
-    - javascript
+  name: test-workflow-pipeline
+  title: Test pipeline using Workflows
 spec:
-  output:
-    links:
-      - title: Pipeline Details
-        url: ${{ steps.trigger.output.PipelineUrl }}
-  lifecycle: production
+  owner: name.owner
+  type: service
   parameters:
-    - title: Secure File Upload
-      required:
-        - uploaded_file
-        - projectname
-        - templatekey
-        - usergroup
+    - title: Repository Name
       properties:
-        token:
-          title: Harness Token
-          type: string
-          ui:widget: password
-          ui:field: HarnessAuthToken
-        service_name:
-          title: Service Name
-          type: string
-          description: Mention the project name
-        user_id:
-          title: Select User
-          type: string
-          ui:field: DropdownPicker
-          ui:options:
-            label: Select a user from the list
-          external_data:
-            apiEndpoint: https://jsder.typicode.com/users
-            method: GET
-            fieldMapping:
-              label: name
-              value: id
         project_name:
-          title: Choose Project
+          title: Name your project
+          ui:readonly: true
           type: string
-          ui:field: OwnerPicker
-          ui:options:
-            allowedKinds:
-              - Project
-            dynamicData:
-              apiEndpoint: https://app.harness.io/v1/orgs/Prod/projects
-              method: GET
-              headers:
-                x-api-key: ${{ secrets.HARNESS_API_KEY }}
-                Harness-Account: ${{ secrets.HARNESS_ACCOUNT_ID }}
-              fieldMapping:
-                label: ${project.name} (${project.identifier})
-                value: ${project.identifier}
-        asset_id:
-          title: Choose Asset ID
-          type: string
-          ui:field: DropdownPicker
-          ui:options:
-            label: Select a asset from the list
-          external_data:
-            apiEndpoint: https://alm713.dswh.ds.com/getAllProjects
-            method: GET
-            fieldMapping:
-              label: name
-              value: id
-        github_repo:
-          title: Name of the GitHub repository
-          type: string
-          description: This will be the name of Repository on Github
-        projectkey:
-          title: Jira Project Key
-          type: string
-          default: DEMO
-          description: Your Project will have this key which will appear in the url
-        projectname:
-          type: string
-          title: Add a project name
-          default: demo
-        templatekey:
-          type: string
-          title: Add the template type
-          desciption: Select and add a template
-        usergroup:
-          title: Choose an Owner for the Service
-          type: string
-          ui:field: OwnerPicker
-          ui:options:
-            allowedKinds:
-              - Group
         uploaded_file:
           title: Upload File
           type: string
           format: data-url
-          description: Upload a file to be processed in the workflow.
+          description: Upload a file that will be processed in the workflow
           ui:backstage:
             review:
               show: false
-              mask: true
-    - title: Service Infrastructure Details
-      required:
-        - owner
-      properties:
-        owner:
-          title: Choose an Owner for the Service
-          type: string
-          ui:field: OwnerPicker
-          ui:options:
-            allowedKinds:
-              - User
+              mask: true  
         token:
           title: Harness Token
           type: string
@@ -126,19 +29,14 @@ spec:
           ui:field: HarnessAuthToken
   steps:
     - id: trigger
-      name: Bootstrapping your new service
+      name: Creating your github repository
       action: trigger:harness-custom-pipeline
       input:
-        url: PIPELINE URL
+        url: PIPELINE_URL
         inputset:
-          service_name: ${{ parameters.service_name }}
-          project_name: ${{ parameters.project_name }}
-          github_repo: ${{ parameters.github_repo }}
-          cloud_provider: ${{ parameters.provider }}
-          projectkey: ${{ parameters.projectkey }}
-          projectname: ${{ parameters.projectname }}
-          templatekey: ${{ parameters.templatekey }}
-          usergroup: ${{ parameters.usergroup }}
+          github_org: ${{ parameters.project_name }}
         apikey: ${{ parameters.token }}
-  ownedBy:
-    - group:account/AccAdmin
+  output:
+    links:
+      - title: Pipeline Details
+        url: ${{ steps.trigger.output.PipelineUrl }}
