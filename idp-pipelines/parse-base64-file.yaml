@@ -1,0 +1,91 @@
+pipeline:
+  name: demo-pipeline-file-processing
+  identifier: demopipelinefileprocessing
+  projectIdentifier: communityeng
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: demo
+        identifier: demo
+        description: ""
+        type: IDP
+        spec:
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Run_1
+                  identifier: Run_1
+                  spec:
+                    shell: Pwsh
+                    command: |-
+                      # Simulate fetching the uploaded file content as a data URL (replace with actual variable)
+                      $uploadedFileContent = '<+pipeline.variables.uploadedFile>'
+
+                      # Check if the uploaded file content is provided
+                      if ($uploadedFileContent -eq "null" -or [string]::IsNullOrEmpty($uploadedFileContent)) {
+                          Write-Host "Uploaded file content is missing. Exiting..." -ForegroundColor Red
+                          exit 1
+                      } else {
+                          # Extract base64 part from the data URL (everything after the base64, part)
+                          if ($uploadedFileContent -match 'base64,(.*)') {
+                              $base64Content = $matches[1]
+                          } else {
+                              Write-Host "No base64 content found in the uploaded file." -ForegroundColor Red
+                              exit 1
+                          }
+
+                          Write-Host "Base64 content extracted from the uploaded file."
+
+                          # Decode the base64 content to a byte array
+                          try {
+                              $decodedBytes = [System.Convert]::FromBase64String($base64Content)
+                              Write-Host "Base64 content decoded successfully."
+
+                              # Convert the byte array to a UTF-8 string
+                              $decodedContent = [System.Text.Encoding]::UTF8.GetString($decodedBytes)
+                          } catch {
+                              Write-Host "Failed to decode the base64 content. Ensure the uploaded file is correctly base64-encoded." -ForegroundColor Red
+                              exit 1
+                          }
+
+                          # Now, parse the decoded content as JSON
+                          try {
+                              $parsedJson = $decodedContent | ConvertFrom-Json
+                              Write-Host "Decoded content successfully parsed as JSON."
+                          } catch {
+                              Write-Host "Decoded content is not valid JSON. Saving as plain text." -ForegroundColor Yellow
+                              $parsedJson = $null
+                          }
+
+                          # Define the output file path
+                          $outputFilePath = "processedFile.json"
+
+                          # Write the decoded content to a file
+                          if ($parsedJson -ne $null) {
+                              # If valid JSON, save it in JSON format
+                              $parsedJson | ConvertTo-Json -Depth 10 | Set-Content -Path $outputFilePath
+                          } else {
+                              # If not valid JSON, save the plain text content
+                              Set-Content -Path $outputFilePath -Value $decodedContent
+                          }
+
+                          Write-Host "Processed file saved at: $outputFilePath" -ForegroundColor Green
+
+                          # Display the content of the processed file
+                          Get-Content -Path $outputFilePath
+                      }
+        tags: {}
+  variables:
+    - name: uploadedFile
+      type: String
+      description: ""
+      required: false
+      value: <+input>
