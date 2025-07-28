@@ -79,7 +79,7 @@ metadata:
 
     # The Harness API endpoint for creating entities
     harness_url = (
-        f"https://qa.harness.io/v1/entities"
+        f"https://app.harness.io/v1/entities"
         f"?convert=false&dry_run=false"
         f"&orgIdentifier={ORG_IDENTIFIER}&projectIdentifier={PROJECT_IDENTIFIER}"
     )
